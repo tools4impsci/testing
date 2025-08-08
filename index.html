@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,9 +129,14 @@
         .interactive-quiz .quiz-option.selected { background-color: var(--accent-color); }
         .interactive-quiz .quiz-option.correct { background-color: #D4EDDA; border-color: #C3E6CB; }
         .interactive-quiz .quiz-option.incorrect { background-color: #F8D7DA; border-color: #F5C6CB; }
-        #eric-search-results .strategy-item { border-bottom: 1px solid var(--border-color); }
-        .determinant-list { max-height: 600px; overflow-y: auto; }
-        .strategy-list { max-height: 600px; overflow-y: auto; }
+        
+        /* --- NEW Strategy Planner Styles --- */
+        .determinant-card { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 0.5rem; padding: 1rem; margin-bottom: 0.75rem; }
+        .determinant-card.barrier { border-left: 4px solid #EF4444; }
+        .determinant-card.facilitator { border-left: 4px solid #22C55E; }
+        .strategy-selection-modal .strategy-item { border-bottom: 1px solid var(--border-color); padding: 0.75rem 0.5rem; }
+        .strategy-selection-modal .strategy-item:hover { background-color: #fefce8; }
+        .selected-strategy-card { background-color: white; border: 1px solid #E5E7EB; padding: 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
 
         /* --- Read-only preview styles --- */
         .read-only-page .btn-primary, .read-only-page .btn-secondary { display: none; }
@@ -226,7 +232,7 @@
         <div id="page-cfir-diagnostic" class="hidden fade-in"></div>
         <div id="page-barrier-prioritizer" class="hidden fade-in"></div>
         <div id="page-readiness-assessor" class="hidden fade-in"></div>
-        <div id="page-explore-eric-strategies" class="hidden fade-in"></div>
+        <div id="page-strategy-planner" class="hidden fade-in"></div>
         <div id="page-irlm" class="hidden fade-in"></div>
         <div id="page-behavioral-diagnosis" class="hidden fade-in"></div>
         <div id="page-fidelity-planner" class="hidden fade-in"></div>
@@ -250,7 +256,7 @@
             projectName: "New Project",
             projectStatus: {
                 'usable-innovation': 'incomplete', 'ecosystem-mapper': 'incomplete', 'cfir-diagnostic': 'incomplete',
-                'barrier-prioritizer': 'incomplete', 'readiness-assessor': 'incomplete', 'explore-eric-strategies': 'incomplete', 'irlm': 'incomplete', 'behavioral-diagnosis': 'incomplete',
+                'barrier-prioritizer': 'incomplete', 'readiness-assessor': 'incomplete', 'strategy-planner': 'incomplete', 'irlm': 'incomplete', 'behavioral-diagnosis': 'incomplete',
                 'fidelity-planner': 'incomplete', 'costing-planner': 'incomplete', 
                 'causal-pathway-diagrammer': 'incomplete',
                 'outcomes-planner': 'incomplete', 'adaptations-tracker': 'incomplete', 'pdsa-tracker': 'incomplete',
@@ -270,8 +276,9 @@
             },
             barriers: [],
             readinessAssessment: { commitment: 50, efficacy: 50, commitmentNotes: "", efficacyNotes: "" },
+            strategyPlan: [], // New data structure: [{determinantId, determinantText, determinantType, strategies: [{name, definition}]}]
             irlm: { 
-                strategies: [], 
+                strategies: [], // This will now be populated from strategyPlan for the IRLM view
                 mechanisms: [] 
             },
             behavioralDiagnosis: { diagnoses: [] },
@@ -402,7 +409,7 @@
                 case 'page-cfir-diagnostic': renderCfirDiagnostic(); break;
                 case 'page-barrier-prioritizer': renderBarrierPrioritizer(); break;
                 case 'page-readiness-assessor': renderReadinessAssessor(); break;
-                case 'page-explore-eric-strategies': renderExploreEricStrategies(); break;
+                case 'page-strategy-planner': renderStrategyPlanner(); break;
                 case 'page-irlm': renderIRLM(); break;
                 case 'page-behavioral-diagnosis': renderBehavioralDiagnosis(); break;
                 case 'page-fidelity-planner': renderFidelityPlanner(); break;
@@ -462,7 +469,7 @@
             const container = document.getElementById('plan');
             const phases = [
                 { name: 'Exploration', modules: ['usable-innovation', 'ecosystem-mapper', 'cfir-diagnostic', 'barrier-prioritizer', 'readiness-assessor'] },
-                { name: 'Preparation', modules: ['explore-eric-strategies', 'irlm', 'behavioral-diagnosis', 'fidelity-planner', 'costing-planner', 'outcomes-planner', 'causal-pathway-diagrammer'] },
+                { name: 'Preparation', modules: ['strategy-planner', 'irlm', 'behavioral-diagnosis', 'fidelity-planner', 'costing-planner', 'outcomes-planner', 'causal-pathway-diagrammer'] },
                 { name: 'Implementation', modules: ['adaptations-tracker', 'pdsa-tracker'] },
                 { name: 'Sustainment', modules: ['npt-monitor', 'sustainment-planner'] }
             ];
@@ -473,7 +480,7 @@
                 'cfir-diagnostic': { title: 'Assess the Context', desc: 'Identify potential barriers and strengths in the environment using the CFIR framework.' },
                 'barrier-prioritizer': { title: 'Prioritize Barriers', desc: 'Systematically identify and prioritize implementation barriers to focus efforts.' },
                 'readiness-assessor': { title: 'Assess Readiness for Change', desc: 'Measure the organization\'s shared commitment and confidence to make this change.' },
-                'explore-eric-strategies': { title: 'Explore ERIC Strategies', desc: 'Select evidence-based strategies to address prioritized determinants.'},
+                'strategy-planner': { title: 'Plan Strategies', desc: 'Select evidence-based strategies to address prioritized determinants.'},
                 'irlm': { title: 'Implementation Research Logic Model', desc: 'Visually map the pathway from determinants to outcomes, linking them with strategies.' },
                 'behavioral-diagnosis': { title: 'Understand Behavior Change', desc: 'Figure out what might prevent people from adopting the new practice using the COM-B model.' },
                 'fidelity-planner': { title: 'Plan for Fidelity', desc: 'Define the core components of the EBP and plan how to measure them.' },
@@ -1192,105 +1199,7 @@
             container.innerHTML = `<h3 class="text-xl font-bold section-title mb-3">Suggested Strategies</h3><div class="bg-green-50 border border-green-200 p-4 rounded-lg space-y-3">${strategies.map(s => `<p class="text-green-800">${s}</p>`).join('')}</div>`;
         }
         
-        // --- MODULE: Explore ERIC Strategies (NEW) ---
-        function renderExploreEricStrategies() {
-            const container = document.getElementById('page-explore-eric-strategies');
-            container.innerHTML = `
-                ${createBackLink('plan')}
-                ${createPreviewNotice()}
-                <div class="card p-8">
-                    <h1 class="text-3xl font-bold page-title mb-2">Explore ERIC Strategies</h1>
-                    <p class="text-text-light mb-6">Select implementation strategies from the ERIC compilation to address your prioritized determinants and populate your logic model.</p>
-                    
-                    <div class="grid lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-1">
-                            <h2 class="text-xl font-bold section-title mb-4">Prioritized Determinants</h2>
-                            <div id="eric-determinants-list" class="determinant-list bg-bg-light p-3 rounded-lg border"></div>
-                        </div>
-                        <div class="lg:col-span-2">
-                            <h2 class="text-xl font-bold section-title mb-4">ERIC Strategy Library</h2>
-                            <input type="text" id="eric-strategy-search" placeholder="Search strategies..." class="mb-4" onkeyup="filterEricStrategySelector()">
-                            <div id="eric-strategy-selector" class="strategy-list pr-2"></div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 border-t pt-6 flex justify-end">
-                        <button class="btn btn-primary" onclick="saveModule('explore-eric-strategies')">Save and Mark as Complete</button>
-                    </div>
-                </div>
-            `;
-            renderEricDeterminantsList();
-            renderEricStrategySelector();
-        }
-
-        function renderEricDeterminantsList() {
-            const container = document.getElementById('eric-determinants-list');
-            if (!container) return;
-
-            let facilitatorsHTML = '<div><h3 class="font-semibold text-green-700 mb-2">Facilitators</h3><ul class="list-disc pl-5 space-y-1">';
-            let barriersHTML = '<div class="mt-4"><h3 class="font-semibold text-red-700 mb-2">Barriers</h3><ul class="list-disc pl-5 space-y-1">';
-            let hasFacilitators = false;
-            let hasBarriers = false;
-
-            // From CFIR
-            Object.entries(projectData.cfirAssessment.ratings).forEach(([key, rating]) => {
-                if (rating.valence > 0) {
-                    hasFacilitators = true;
-                    const constructName = key.replace(/([A-Z])/g, ' $1').trim();
-                    facilitatorsHTML += `<li class="text-sm text-gray-700">${constructName}</li>`;
-                } else if (rating.valence < 0) {
-                    hasBarriers = true;
-                    const constructName = key.replace(/([A-Z])/g, ' $1').trim();
-                    barriersHTML += `<li class="text-sm text-gray-700">${constructName}</li>`;
-                }
-            });
-
-            // From Barrier Prioritizer
-            projectData.barriers.forEach(barrier => {
-                hasBarriers = true;
-                barriersHTML += `<li class="text-sm text-gray-700">${barrier.text}</li>`;
-            });
-
-            if (!hasFacilitators) facilitatorsHTML += '<p class="text-sm text-gray-500">No facilitators identified.</p>';
-            if (!hasBarriers) barriersHTML += '<p class="text-sm text-gray-500">No barriers identified.</p>';
-
-            facilitatorsHTML += '</ul></div>';
-            barriersHTML += '</ul></div>';
-
-            container.innerHTML = facilitatorsHTML + barriersHTML;
-        }
-
-        function filterEricStrategySelector() {
-            const searchTerm = document.getElementById('eric-strategy-search').value.toLowerCase();
-            const allStrategies = document.querySelectorAll('#eric-strategy-selector .strategy-item-wrapper');
-            const allClusters = document.querySelectorAll('#eric-strategy-selector details');
-
-            allStrategies.forEach(item => {
-                const name = item.dataset.name.toLowerCase();
-                const definition = item.dataset.definition.toLowerCase();
-                if (name.includes(searchTerm) || definition.includes(searchTerm)) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            // Open/close clusters based on visible children
-            allClusters.forEach(cluster => {
-                const visibleChildren = cluster.querySelectorAll('.strategy-item-wrapper:not([style*="display: none"])');
-                if (searchTerm && visibleChildren.length > 0) {
-                    cluster.open = true;
-                } else if (searchTerm) {
-                    cluster.open = false;
-                }
-                if (visibleChildren.length === 0) {
-                    cluster.style.display = 'none';
-                } else {
-                    cluster.style.display = '';
-                }
-            });
-        }
-
+        // --- MODULE: Strategy Planner (REPLACES Explore ERIC Strategies) ---
         const ERIC_STRATEGIES = [
             { cluster: "Use Evaluative and Iterative Strategies", name: "Assess for readiness and identify barriers and facilitators", definition: "Assess various aspects of an organization to determine its degree of readiness to implement, barriers that may impede implementation, and strengths that can be used in the implementation effort" },
             { cluster: "Use Evaluative and Iterative Strategies", name: "Audit and provide feedback", definition: "Collect and summarize clinical performance data over a specified time period and give it to clinicians and administrators to monitor, evaluate, and modify provider behavior" },
@@ -1365,52 +1274,215 @@
             { cluster: "Use Mass Media", name: "Use mass media", definition: "Use media to reach large numbers of people to spread the word about the clinical innovation" }
         ];
 
-        function renderEricStrategySelector() {
-            const container = document.getElementById('eric-strategy-selector');
+        function renderStrategyPlanner() {
+            const container = document.getElementById('page-strategy-planner');
+            container.innerHTML = `
+                ${createBackLink('plan')}
+                ${createPreviewNotice()}
+                <div class="card p-8">
+                    <h1 class="text-3xl font-bold page-title mb-2">Strategy Planner</h1>
+                    <p class="text-text-light mb-6">For each determinant identified, select one or more evidence-based strategies from the ERIC compilation to address it.</p>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <!-- Left Column: Determinants -->
+                        <div class="lg:col-span-1">
+                            <h2 class="text-xl font-bold section-title mb-4">Determinants to Address</h2>
+                            <div id="strategy-determinants-list" class="space-y-3 max-h-[600px] overflow-y-auto pr-2"></div>
+                        </div>
+                        <!-- Right Column: Selected Strategies -->
+                        <div class="lg:col-span-1">
+                            <h2 class="text-xl font-bold section-title mb-4">Selected Strategies</h2>
+                            <div id="strategy-plan-display" class="space-y-4 max-h-[600px] overflow-y-auto pr-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 border-t pt-6 flex justify-end">
+                        <button class="btn btn-primary" onclick="saveModule('strategy-planner')">Save and Mark as Complete</button>
+                    </div>
+                </div>
+            `;
+            renderStrategyDeterminantsList();
+            renderStrategyPlanDisplay();
+        }
+
+        function getDeterminants() {
+            const determinants = [];
+            // From CFIR
+            Object.entries(projectData.cfirAssessment.ratings).forEach(([key, rating]) => {
+                if (rating.valence !== 0) {
+                    const constructName = key.replace(/([A-Z])/g, ' $1').trim();
+                    determinants.push({
+                        id: `cfir-${key}`,
+                        text: constructName,
+                        type: rating.valence < 0 ? 'barrier' : 'facilitator'
+                    });
+                }
+            });
+            // From Barrier Prioritizer
+            projectData.barriers.forEach(barrier => {
+                determinants.push({
+                    id: `barrier-${barrier.id}`,
+                    text: barrier.text,
+                    type: 'barrier'
+                });
+            });
+            return determinants;
+        }
+
+        function renderStrategyDeterminantsList() {
+            const container = document.getElementById('strategy-determinants-list');
             if (!container) return;
-            
+
+            const determinants = getDeterminants();
+            if (determinants.length === 0) {
+                container.innerHTML = `<p class="text-center text-text-light p-4 bg-bg-light rounded-md">No barriers or facilitators have been identified yet. Please complete the 'Assess the Context' and 'Prioritize Barriers' modules first.</p>`;
+                return;
+            }
+
+            container.innerHTML = determinants.map(det => `
+                <div class="determinant-card ${det.type}">
+                    <p class="font-semibold text-text-dark">${det.text}</p>
+                    <div class="text-right mt-2">
+                        <button class="btn btn-primary text-sm py-1 px-3" onclick="openStrategySelectionModal('${det.id}')">Select Strategies</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderStrategyPlanDisplay() {
+            const container = document.getElementById('strategy-plan-display');
+            if (!container) return;
+
+            if (projectData.strategyPlan.length === 0) {
+                container.innerHTML = `<p class="text-center text-text-light p-4 bg-bg-light rounded-md">No strategies selected yet. Use the 'Select Strategies' button on the left to build your plan.</p>`;
+                return;
+            }
+
+            container.innerHTML = projectData.strategyPlan.map(planItem => `
+                <div class="determinant-card ${planItem.determinantType}">
+                    <p class="font-bold text-text-dark mb-2">${planItem.determinantText}</p>
+                    <div class="space-y-2">
+                        ${planItem.strategies.map(strat => `
+                            <div class="selected-strategy-card flex justify-between items-start">
+                                <p class="flex-1 pr-2">${strat.name} ${createInfoTip(strat.definition)}</p>
+                                <button class="text-red-500 hover:text-red-700 font-bold text-xl" onclick="removeStrategyFromPlan('${planItem.determinantId}', '${strat.name}')">&times;</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            addInfoTipListeners();
+        }
+
+        function openStrategySelectionModal(determinantId) {
+            const determinant = getDeterminants().find(d => d.id === determinantId);
+            if (!determinant) return;
+
             const groupedStrategies = ERIC_STRATEGIES.reduce((acc, strategy) => {
                 (acc[strategy.cluster] = acc[strategy.cluster] || []).push(strategy);
                 return acc;
             }, {});
 
-            container.innerHTML = Object.entries(groupedStrategies).map(([cluster, strategies]) => {
-                return `
-                    <details class="bg-white border rounded-lg mb-2">
-                        <summary class="p-3 font-semibold flex justify-between items-center text-primary-color">${cluster} <svg class="details-caret h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></summary>
-                        <div class="p-3 border-t">
-                            ${strategies.map(strategy => {
-                                const isSelected = projectData.irlm.strategies.some(s => s.text === strategy.name);
-                                return `
-                                <div class="strategy-item-wrapper py-2 border-b last:border-b-0" data-name="${strategy.name}" data-definition="${strategy.definition}">
-                                    <label class="flex items-start space-x-3">
-                                        <input type="checkbox" class="mt-1" ${isSelected ? 'checked' : ''} onchange="toggleIrlmStrategy(this, '${strategy.name}')">
-                                        <span class="flex-1">
-                                            <span class="font-medium">${strategy.name}</span>
-                                            ${createInfoTip(strategy.definition)}
-                                        </span>
-                                    </label>
+            const modalHTML = `
+            <div id="strategy-selection-modal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center p-4 z-[100] strategy-selection-modal">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl flex flex-col" style="height: 90vh;">
+                    <div class="p-6 border-b">
+                        <h2 class="text-2xl font-bold page-title">Select Strategies for:</h2>
+                        <p class="text-lg font-semibold text-text-dark">${determinant.text}</p>
+                        <input type="text" id="eric-modal-search" placeholder="Search strategies..." class="mt-4 w-full" onkeyup="filterEricModalSelector()">
+                    </div>
+                    <div class="p-6 flex-grow overflow-y-auto">
+                        <form id="strategy-selection-form">
+                        ${Object.entries(groupedStrategies).map(([cluster, strategies]) => `
+                            <details class="bg-white border rounded-lg mb-2" open>
+                                <summary class="p-3 font-semibold flex justify-between items-center text-primary-color">${cluster}<svg class="details-caret h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></summary>
+                                <div class="p-3 border-t">
+                                ${strategies.map(strategy => {
+                                    const planItem = projectData.strategyPlan.find(p => p.determinantId === determinantId);
+                                    const isSelected = planItem ? planItem.strategies.some(s => s.name === strategy.name) : false;
+                                    return `
+                                    <div class="strategy-item" data-name="${strategy.name}" data-definition="${strategy.definition}">
+                                        <label class="flex items-start space-x-3 cursor-pointer">
+                                            <input type="checkbox" name="eric_strategy" value="${encodeURIComponent(JSON.stringify(strategy))}" class="mt-1" ${isSelected ? 'checked' : ''}>
+                                            <span class="flex-1">
+                                                <span class="font-medium">${strategy.name}</span>
+                                                <p class="text-sm text-text-light">${strategy.definition}</p>
+                                            </span>
+                                        </label>
+                                    </div>`;
+                                }).join('')}
                                 </div>
-                                `
-                            }).join('')}
-                        </div>
-                    </details>
-                `;
-            }).join('');
-            addInfoTipListeners();
+                            </details>
+                        `).join('')}
+                        </form>
+                    </div>
+                    <div class="p-4 bg-gray-50 border-t flex justify-end space-x-3">
+                        <button type="button" class="btn bg-gray-200 text-gray-700" onclick="closeModal('strategy-selection-modal')">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="saveStrategySelections('${determinantId}')">Save Selections</button>
+                    </div>
+                </div>
+            </div>`;
+            document.getElementById('modal-container').innerHTML = modalHTML;
+        }
+        
+        function filterEricModalSelector() {
+            const searchTerm = document.getElementById('eric-modal-search').value.toLowerCase();
+            const allItems = document.querySelectorAll('#strategy-selection-modal .strategy-item');
+            const allClusters = document.querySelectorAll('#strategy-selection-modal details');
+
+            allItems.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                const definition = item.dataset.definition.toLowerCase();
+                item.style.display = (name.includes(searchTerm) || definition.includes(searchTerm)) ? '' : 'none';
+            });
+
+            allClusters.forEach(cluster => {
+                const visibleChildren = cluster.querySelectorAll('.strategy-item:not([style*="display: none"])');
+                cluster.style.display = visibleChildren.length > 0 ? '' : 'none';
+            });
         }
 
-        function toggleIrlmStrategy(checkbox, strategyName) {
-            if (checkbox.checked) {
-                // Add if not already present
-                if (!projectData.irlm.strategies.some(s => s.text === strategyName)) {
-                    projectData.irlm.strategies.push({ id: Date.now(), text: strategyName });
+        function saveStrategySelections(determinantId) {
+            const determinant = getDeterminants().find(d => d.id === determinantId);
+            const form = document.getElementById('strategy-selection-form');
+            const selectedCheckboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+            
+            const selectedStrategies = Array.from(selectedCheckboxes).map(cb => JSON.parse(decodeURIComponent(cb.value)));
+
+            let planItem = projectData.strategyPlan.find(p => p.determinantId === determinantId);
+
+            if (selectedStrategies.length > 0) {
+                if (planItem) {
+                    planItem.strategies = selectedStrategies;
+                } else {
+                    projectData.strategyPlan.push({
+                        determinantId: determinantId,
+                        determinantText: determinant.text,
+                        determinantType: determinant.type,
+                        strategies: selectedStrategies
+                    });
                 }
             } else {
-                // Remove
-                projectData.irlm.strategies = projectData.irlm.strategies.filter(s => s.text !== strategyName);
+                // If no strategies are selected, remove the plan item if it exists
+                projectData.strategyPlan = projectData.strategyPlan.filter(p => p.determinantId !== determinantId);
             }
+            
+            closeModal('strategy-selection-modal');
+            renderStrategyPlanDisplay();
         }
+
+        function removeStrategyFromPlan(determinantId, strategyName) {
+            let planItem = projectData.strategyPlan.find(p => p.determinantId === determinantId);
+            if (planItem) {
+                planItem.strategies = planItem.strategies.filter(s => s.name !== strategyName);
+                // If this was the last strategy for this determinant, remove the whole plan item
+                if (planItem.strategies.length === 0) {
+                    projectData.strategyPlan = projectData.strategyPlan.filter(p => p.determinantId !== determinantId);
+                }
+            }
+            renderStrategyPlanDisplay();
+        }
+
 
         // --- MODULE: IRLM ---
         function renderIRLM() {
@@ -1423,7 +1495,7 @@
                     <p class="text-text-light mb-6">This logic model visually connects determinants, strategies, mechanisms, and outcomes based on inputs from other modules.</p>
                     
                     <div class="flex justify-end mb-4">
-                        <button class="btn btn-secondary" onclick="showPage('page-explore-eric-strategies')">Edit Strategies</button>
+                        <button class="btn btn-secondary" onclick="showPage('page-strategy-planner')">Edit Strategies</button>
                     </div>
 
                     <h2 class="text-2xl font-bold section-title mt-6 mb-4">Logic Model Figure</h2>
@@ -1498,8 +1570,11 @@
                 determinants[barrier.level].push({ text: barrier.text, type: 'barrier' });
             });
 
+            // Flatten strategies from the new strategyPlan
+            const strategies = projectData.strategyPlan.flatMap(item => item.strategies.map(s => ({ text: s.name, id: s.name })) );
+            const uniqueStrategies = Array.from(new Map(strategies.map(item => [item.id, item])).values());
 
-            const strategies = projectData.irlm.strategies;
+
             const mechanisms = projectData.irlm.mechanisms;
             const outcomes = projectData.outcomes.logicModel;
             
@@ -1523,7 +1598,7 @@
             // -- Strategies Column --
             const stratCol = figure.append('div').attr('class', 'irlm-column');
             stratCol.append('div').attr('class', 'irlm-column-title').text('Strategies');
-            strategies.forEach(item => {
+            uniqueStrategies.forEach(item => {
                 stratCol.append('div').attr('class', 'irlm-item').text(item.text);
             });
 
@@ -1719,47 +1794,6 @@
         function deleteCostingActivity(id) {
             projectData.costingPlan.activities = projectData.costingPlan.activities.filter(a => a.id !== id);
             renderCostingLog();
-        }
-
-        // --- MODULE: Drivers Planner ---
-        function renderDriversPlanner() {
-            const container = document.getElementById('page-drivers-planner');
-            const d = projectData.drivers;
-            container.innerHTML = `
-                ${createBackLink('plan')}
-                ${createPreviewNotice()}
-                <div class="card p-8">
-                    <h1 class="text-3xl font-bold page-title mb-2">Plan for Support</h1>
-                    <p class="text-text-light mb-6">Plan for the core supports needed to help people use the new practice correctly and consistently.</p>
-                    <div class="space-y-8">
-                        <div>
-                            <h3 class="text-xl font-semibold section-title mb-4">Competency Drivers</h3>
-                            <div class="space-y-4 pl-4 border-l-2 border-border-color">
-                                <div><label class="block font-semibold text-sm">Selection ${createInfoTip("How will the right staff be selected?")}</label><textarea rows="3" onchange="d.selection = this.value" placeholder="e.g., Criteria for new hires, interviews...">${d.selection}</textarea></div>
-                                <div><label class="block font-semibold text-sm">Training ${createInfoTip("What initial training will be provided?")}</label><textarea rows="3" onchange="d.training = this.value" placeholder="e.g., Workshop, online modules...">${d.training}</textarea></div>
-                                <div><label class="block font-semibold text-sm">Coaching ${createInfoTip("What is the plan for ongoing coaching and feedback?")}</label><textarea rows="3" onchange="d.coaching = this.value" placeholder="e.g., Peer coaching, expert consultation...">${d.coaching}</textarea></div>
-                            </div>
-                        </div>
-                         <div>
-                            <h3 class="text-xl font-semibold section-title mb-4">Organizational Drivers</h3>
-                            <div class="space-y-4 pl-4 border-l-2 border-border-color">
-                                <div><label class="block font-semibold text-sm">Data Systems ${createInfoTip("What data systems are needed to monitor progress?")}</label><textarea rows="3" onchange="d.dataSystems = this.value" placeholder="e.g., EHR modifications, new dashboards...">${d.dataSystems}</textarea></div>
-                                <div><label class="block font-semibold text-sm">Administrative Support ${createInfoTip("What administrative supports or policy changes are required?")}</label><textarea rows="3" onchange="d.adminSupport = this.value" placeholder="e.g., Changes to job descriptions, new billing codes...">${d.adminSupport}</textarea></div>
-                                <div><label class="block font-semibold text-sm">System-level Adjustments ${createInfoTip("How will the system be adjusted to support the new way of work?")}</label><textarea rows="3" onchange="d.systemAdjustments = this.value" placeholder="e.g., Changes to workflow, referral processes...">${d.systemAdjustments}</textarea></div>
-                            </div>
-                        </div>
-                         <div>
-                            <h3 class="text-xl font-semibold section-title mb-4">Leadership Drivers</h3>
-                            <div class="space-y-4 pl-4 border-l-2 border-border-color">
-                                <div><label class="block font-semibold text-sm">Technical Leadership ${createInfoTip("Managing the project's timelines, resources, and tasks.")}</label><textarea rows="3" onchange="d.technicalLeadership = this.value" placeholder="e.g., Project management, regular check-ins...">${d.technicalLeadership}</textarea></div>
-                                <div><label class="block font-semibold text-sm">Adaptive Leadership ${createInfoTip("Helping people through the change, addressing challenges, and modeling commitment.")}</label><textarea rows="3" onchange="d.adaptiveLeadership = this.value" placeholder="e.g., Communicating the vision, celebrating wins...">${d.adaptiveLeadership}</textarea></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-8 border-t pt-6 flex justify-end">
-                        <button class="btn btn-primary" onclick="saveModule('drivers-planner')">Save and Mark as Complete</button>
-                    </div>
-                </div>`;
         }
 
         // --- MODULE: Adaptations Tracker ---
@@ -1966,7 +2000,7 @@
                 <div class="bg-bg-light p-4 rounded-lg">
                     <h3 class="font-bold text-lg section-title mb-3">${outcomeTypes[type]}</h3>
                     <div id="logic-${type}-list" class="space-y-2 mb-3">
-                        ${projectData.outcomes.logicModel[type].map((item, index) => `<div class="bg-white p-2 rounded border flex justify-between items-center"><span>${item}</span><button class="text-red-500 font-bold" onclick="deleteLogicModelItem('${type}', ${index})">&times;</button></div>`).join('')}
+                        ${(projectData.outcomes.logicModel[type] || []).map((item, index) => `<div class="bg-white p-2 rounded border flex justify-between items-center"><span>${item}</span><button class="text-red-500 font-bold" onclick="deleteLogicModelItem('${type}', ${index})">&times;</button></div>`).join('')}
                     </div>
                     <div class="flex"><input type="text" id="logic-${type}-input" class="rounded-r-none"><button class="btn btn-secondary rounded-l-none text-sm" onclick="addLogicModelItem('${type}')">Add</button></div>
                 </div>`).join('');
@@ -1975,6 +2009,9 @@
         function addLogicModelItem(type) {
             const input = document.getElementById(`logic-${type}-input`);
             if(input.value.trim()) {
+                if (!projectData.outcomes.logicModel[type]) {
+                    projectData.outcomes.logicModel[type] = [];
+                }
                 projectData.outcomes.logicModel[type].push(input.value.trim());
                 input.value = '';
                 renderLogicModel();
@@ -2345,264 +2382,240 @@
             switch(pageName) {
                 case 'foundations': renderLearnFoundations(); break;
                 case 'tmfs': renderLearnTMFs(); break;
-                case 'strategies': renderLearnStrategies(); break;
-                case 'outcomes': renderLearnOutcomes(); break;
-            }
-        }
+                case 'strategies': renderLearnStrategies(); break;
+                case 'outcomes': renderLearnOutcomes(); break;
+            }
+        }
 
-        function renderLearn() { 
-            const container = document.getElementById('learn');
-            container.innerHTML = `
-                <h1 class="text-4xl font-bold text-center page-title mb-4">Learn Hub</h1>
-                <p class="text-center text-text-light mb-10 max-w-3xl mx-auto">Explore these modules to build knowledge of implementation science concepts, frameworks, and methods.</p>
-                <div id="learn-nav-container" class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                    <div class="card learn-card cursor-pointer p-6" onclick="showLearnPage('foundations')">
-                        <h3 class="font-bold text-xl section-title">IS Foundations</h3>
-                        <p class="text-text-light mt-2">Start here. Learn why implementation science exists, what it is, and its core language.</p>
-                    </div>
-                    <div class="card learn-card cursor-pointer p-6" onclick="showLearnPage('tmfs')">
-                        <h3 class="font-bold text-xl section-title">Theories, Models & Frameworks (TMFs)</h3>
-                        <p class="text-text-light mt-2">Explore the conceptual toolkit of IS. Learn to select the right TMF for the purpose.</p>
-                    </div>
-                    <div class="card learn-card cursor-pointer p-6" onclick="showLearnPage('strategies')">
-                        <h3 class="font-bold text-xl section-title">Implementation Strategies (ERIC)</h3>
-                        <p class="text-text-light mt-2">Discover the "how-to" of implementation. Browse a library of 73 evidence-based strategies.</p>
-                    </div>
-                    <div class="card learn-card cursor-pointer p-6" onclick="showLearnPage('outcomes')">
-                        <h3 class="font-bold text-xl section-title">Measuring Success</h3>
-                        <p class="text-text-light mt-2">Understand how to measure what matters. Learn the key outcomes for evaluating implementation.</p>
-                    </div>
-                </div>
-                <div id="learn-content-area" class="mt-8"></div>
-            `;
-        }
+        function renderLearn() { 
+            const container = document.getElementById('learn');
+            container.innerHTML = `
+                <h1 class="text-4xl font-bold text-center page-title mb-4">Learn Hub</h1>
+                <p class="text-center text-text-light mb-10 max-w-3xl mx-auto">Explore these modules to build knowledge of implementation science concepts, frameworks, and methods.</p>
+                <div id="learn-nav-container" class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                    <div class="card learn-card cursor-pointer p-6" onclick="showLearnPage('foundations')">
+                        <h3 class="font-bold text-xl section-title">IS Foundations</h3>
+                        <p class="text-text-light mt-2">Start here. Learn why implementation science exists, what it is, and its core language.</p>
+                    </div>
+                    <div class="card learn-card cursor-pointer p-6" onclick="showLearnPage('tmfs')">
+                        <h3 class="font-bold text-xl section-title">Theories, Models & Frameworks (TMFs)</h3>
+                        <p class="text-text-light mt-2">Explore the conceptual toolkit of IS. Learn to select the right TMF for the purpose.</p>
+                    </div>
+                    <div class="card learn-card cursor-pointer p-6" onclick="showLearnPage('strategies')">
+                        <h3 class="font-bold text-xl section-title">Implementation Strategies (ERIC)</h3>
+                        <p class="text-text-light mt-2">Discover the "how-to" of implementation. Browse a library of 73 evidence-based strategies.</p>
+                    </div>
+                    <div class="card learn-card cursor-pointer p-6" onclick="showLearnPage('outcomes')">
+                        <h3 class="font-bold text-xl section-title">Measuring Success</h3>
+                        <p class="text-text-light mt-2">Understand how to measure what matters. Learn the key outcomes for evaluating implementation.</p>
+                    </div>
+                </div>
+                <div id="learn-content-area" class="mt-8"></div>
+            `;
+        }
 
-        function renderLearnFoundations() {
-            const container = document.getElementById('learn');
-            container.innerHTML = `
-                ${createLearnBackLink()}
-                <div class="card p-8 learn-content">
-                    <h1 class="text-3xl font-bold page-title mb-6">Implementation Science Foundations</h1>
-                    
-                    <h2>Defining the Field: The Science of Uptake</h2>
-                    <p>Implementation Science (IS) is formally defined as "the scientific study of methods to promote the systematic uptake of research findings and other evidence-based practices into routine practice, and, hence, to improve the quality and effectiveness of health services".</p>
-                    <blockquote>The field operates on the principle that implementation is not a simple, linear process but rather a highly complex, multi-stage, and iterative endeavor that requires intentional, explicit, and systematic effort.</blockquote>
+        function renderLearnFoundations() {
+            const container = document.getElementById('learn');
+            container.innerHTML = `
+                ${createLearnBackLink()}
+                <div class="card p-8 learn-content">
+                    <h1 class="text-3xl font-bold page-title mb-6">Implementation Science Foundations</h1>
+                    
+                    <h2>Defining the Field: The Science of Uptake</h2>
+                    <p>Implementation Science (IS) is formally defined as "the scientific study of methods to promote the systematic uptake of research findings and other evidence-based practices into routine practice, and, hence, to improve the quality and effectiveness of health services".</p>
+                    <blockquote>The field operates on the principle that implementation is not a simple, linear process but rather a highly complex, multi-stage, and iterative endeavor that requires intentional, explicit, and systematic effort.</blockquote>
 
-                    <h2>Bridging the "Know-Do Gap"</h2>
-                    <p>The central problem that implementation science confronts is the profound and persistent disconnect between what is known from research and what is done in routine practice. This is often called the "know-do gap".</p>
-                    <p>One of the most frequently cited statistics estimates that it takes an average of <strong>17 years</strong> for new, evidence-based health practices to be incorporated into routine clinical use.</p>
+                    <h2>Bridging the "Know-Do Gap"</h2>
+                    <p>The central problem that implementation science confronts is the profound and persistent disconnect between what is known from research and what is done in routine practice. This is often called the "know-do gap".</p>
+                    <p>One of the most frequently cited statistics estimates that it takes an average of <strong>17 years</strong> for new, evidence-based health practices to be incorporated into routine clinical use.</p>
 
-                    <h2>Core Language of Implementation</h2>
-                    <details class="bg-gray-50 p-4 rounded-lg">
-                        <summary class="font-semibold">Dissemination vs. Implementation</summary>
-                        <p class="mt-2"><strong>Dissemination</strong> refers to the targeted distribution of information. <strong>Implementation</strong> is the process of integrating a specific intervention into practice.</p>
-                    </details>
-                    <details class="bg-gray-50 p-4 rounded-lg mt-2">
-                        <summary class="font-semibold">Adaptation vs. Fidelity</summary>
-                        <p class="mt-2"><strong>Fidelity</strong> is the degree to which an intervention is implemented as intended. <strong>Adaptation</strong> refers to intentional changes made to fit the local context. The challenge is balancing both.</p>
-                    </details>
+                    <h2>Core Language of Implementation</h2>
+                    <details class="bg-gray-50 p-4 rounded-lg">
+                        <summary class="font-semibold">Dissemination vs. Implementation</summary>
+                        <p class="mt-2"><strong>Dissemination</strong> refers to the targeted distribution of information. <strong>Implementation</strong> is the process of integrating a specific intervention into practice.</p>
+                    </details>
+                    <details class="bg-gray-50 p-4 rounded-lg mt-2">
+                        <summary class="font-semibold">Adaptation vs. Fidelity</summary>
+                        <p class="mt-2"><strong>Fidelity</strong> is the degree to which an intervention is implemented as intended. <strong>Adaptation</strong> refers to intentional changes made to fit the local context. The challenge is balancing both.</p>
+                    </details>
 
-                    <h2>Knowledge Check</h2>
-                    <div class="interactive-quiz mt-4 p-4 border rounded-lg" id="foundations-quiz">
-                        <p class="font-semibold mb-2">Which term describes the process of integrating a specific intervention into practice within an organization?</p>
-                        <div class="space-y-2">
-                            <div class="quiz-option" onclick="checkQuizAnswer(this, 'correct')">A) Implementation</div>
-                            <div class="quiz-option" onclick="checkQuizAnswer(this, 'incorrect')">B) Dissemination</div>
-                            <div class="quiz-option" onclick="checkQuizAnswer(this, 'incorrect')">C) Adaptation</div>
-                        </div>
-                        <p id="quiz-feedback" class="mt-3 font-semibold"></p>
-                    </div>
-                </div>
-            `;
-        }
+                    <h2>Knowledge Check</h2>
+                    <div class="interactive-quiz mt-4 p-4 border rounded-lg" id="foundations-quiz">
+                        <p class="font-semibold mb-2">Which term describes the process of integrating a specific intervention into practice within an organization?</p>
+                        <div class="space-y-2">
+                            <div class="quiz-option" onclick="checkQuizAnswer(this, 'correct')">A) Implementation</div>
+                            <div class="quiz-option" onclick="checkQuizAnswer(this, 'incorrect')">B) Dissemination</div>
+                            <div class="quiz-option" onclick="checkQuizAnswer(this, 'incorrect')">C) Adaptation</div>
+                        </div>
+                        <p id="quiz-feedback" class="mt-3 font-semibold"></p>
+                    </div>
+                </div>
+            `;
+        }
 
-        function renderLearnTMFs() {
-            const container = document.getElementById('learn');
-            container.innerHTML = `
-                ${createLearnBackLink()}
-                <div class="card p-8 learn-content">
-                    <h1 class="text-3xl font-bold page-title mb-6">Theories, Models, & Frameworks (TMFs)</h1>
-                    <h2>Why TMFs Matter: Providing Structure to Complexity</h2>
-                    <p>The process of translating research into practice is inherently complex. TMFs are indispensable tools that provide a structured approach to understanding, guiding, and evaluating this complexity. They help to:</p>
-                    <ul>
-                        <li>Understand and explain what influences implementation outcomes.</li>
-                        <li>Describe and guide the process of translating research into practice.</li>
-                        <li>Provide a structure for systematically evaluating implementation.</li>
-                        <li>Enhance the interpretability and generalizability of study findings.</li>
-                    </ul>
-                    
-                    <h2>A Taxonomy of TMFs: Finding the Right Tool for the Job</h2>
-                    <p>There is no single "best" TMF. The selection is purpose-driven. A useful taxonomy categorizes TMFs into five main types based on their primary aim:</p>
-                    
-                    <div class="grid md:grid-cols-2 gap-4 mt-6">
-                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                            <h3 class="text-blue-800 font-semibold">Process Models</h3>
-                            <p>Describe and/or guide the process of translating research into practice. Answers: "What are the steps to follow?"<br><em>Example: EPIS Framework</em></p>
-                        </div>
-                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                            <h3 class="text-green-800 font-semibold">Determinant Frameworks</h3>
-                            <p>Describe factors (barriers/facilitators) that influence outcomes. Answers: "What should be expected?"<br><em>Example: CFIR</em></p>
-                        </div>
-                        <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                            <h3 class="text-purple-800 font-semibold">Classic Theories</h3>
-                            <p>Borrowed from other disciplines to explain change. Answers: "Why do people change?"<br><em>Example: Diffusion of Innovations</em></p>
-                        </div>
-                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                            <h3 class="text-yellow-800 font-semibold">Implementation Theories</h3>
-                            <p>Purpose-built theories to explain implementation aspects. Answers: "How does a practice become routine?"<br><em>Example: NPT</em></p>
-                        </div>
-                         <div class="p-4 bg-red-50 border border-red-200 rounded-lg md:col-span-2">
-                            <h3 class="text-red-800 font-semibold">Evaluation Frameworks</h3>
-                            <p>Provide a structure for evaluating implementation success. Answers: "How will success be measured?"<br><em>Example: RE-AIM</em></p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+        function renderLearnTMFs() {
+            const container = document.getElementById('learn');
+            container.innerHTML = `
+                ${createLearnBackLink()}
+                <div class="card p-8 learn-content">
+                    <h1 class="text-3xl font-bold page-title mb-6">Theories, Models, & Frameworks (TMFs)</h1>
+                    <h2>Why TMFs Matter: Providing Structure to Complexity</h2>
+                    <p>The process of translating research into practice is inherently complex. TMFs are indispensable tools that provide a structured approach to understanding, guiding, and evaluating this complexity. They help to:</p>
+                    <ul>
+                        <li>Understand and explain what influences implementation outcomes.</li>
+                        <li>Describe and guide the process of translating research into practice.</li>
+                        <li>Provide a structure for systematically evaluating implementation.</li>
+                        <li>Enhance the interpretability and generalizability of study findings.</li>
+                    </ul>
+                    
+                    <h2>A Taxonomy of TMFs: Finding the Right Tool for the Job</h2>
+                    <p>There is no single "best" TMF. The selection is purpose-driven. A useful taxonomy categorizes TMFs into five main types based on their primary aim:</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mt-6">
+                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 class="text-blue-800 font-semibold">Process Models</h3>
+                            <p>Describe and/or guide the process of translating research into practice. Answers: "What are the steps to follow?"<br><em>Example: EPIS Framework</em></p>
+                        </div>
+                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                            <h3 class="text-green-800 font-semibold">Determinant Frameworks</h3>
+                            <p>Describe factors (barriers/facilitators) that influence outcomes. Answers: "What should be expected?"<br><em>Example: CFIR</em></p>
+                        </div>
+                        <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                            <h3 class="text-purple-800 font-semibold">Classic Theories</h3>
+                            <p>Borrowed from other disciplines to explain change. Answers: "Why do people change?"<br><em>Example: Diffusion of Innovations</em></p>
+                        </div>
+                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <h3 class="text-yellow-800 font-semibold">Implementation Theories</h3>
+                            <p>Purpose-built theories to explain implementation aspects. Answers: "How does a practice become routine?"<br><em>Example: NPT</em></p>
+                        </div>
+                         <div class="p-4 bg-red-50 border border-red-200 rounded-lg md:col-span-2">
+                            <h3 class="text-red-800 font-semibold">Evaluation Frameworks</h3>
+                            <p>Provide a structure for evaluating implementation success. Answers: "How will success be measured?"<br><em>Example: RE-AIM</em></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
-        function renderLearnStrategies() {
-            const container = document.getElementById('learn');
-            const ericClusters = {
-                "Use Evaluative and Iterative Strategies": ["Assess for readiness", "Audit and provide feedback", "Develop a formal implementation blueprint"],
-                "Provide Interactive Assistance": ["Facilitation", "Provide local technical assistance", "Provide clinical supervision"],
-                "Adapt and Tailor to Context": ["Tailor strategies", "Promote adaptability"],
-                "Develop Stakeholder Interrelationships": ["Identify and prepare champions", "Build a coalition", "Inform local opinion leaders"],
-                "Train and Educate Stakeholders": ["Conduct ongoing training", "Distribute educational materials", "Create a learning collaborative"],
-                "Support Clinicians": ["Remind clinicians", "Revise professional roles", "Facilitate relay of clinical data to providers"],
-                "Engage Consumers": ["Involve patients/consumers", "Increase demand", "Use mass media"],
-                "Utilize Financial Strategies": ["Access new funding", "Alter incentive/allowance structures", "Develop disincentives"],
-                "Change Infrastructure": ["Change record systems", "Change physical structure and equipment", "Mandate change"]
-            };
-            // This is a subset for demonstration. A full implementation would have all 73.
-            const allStrategies = [
-                { name: "Assess for readiness", cluster: "Use Evaluative and Iterative Strategies", definition: "Collecting data before implementation to determine an organization's readiness for change and to identify potential challenges and strengths." },
-                { name: "Audit and provide feedback", cluster: "Use Evaluative and Iterative Strategies", definition: "Collecting and summarizing clinical performance data and giving it back to clinicians and administrators to monitor, evaluate, and modify behavior." },
-                { name: "Facilitation", cluster: "Provide Interactive Assistance", definition: "A process of interactive problem-solving and support provided by a skilled individual (a facilitator) who helps an organization navigate the challenges of implementation." },
-                { name: "Identify and prepare champions", cluster: "Develop Stakeholder Interrelationships", definition: "Identifying, recruiting, and supporting individuals within an organization who dedicate themselves to supporting, marketing, and driving through an implementation effort." },
-                { name: "Conduct ongoing training", cluster: "Train and Educate Stakeholders", definition: "Planning for and conducting training in the EBI on an ongoing basis to reinforce skills and onboard new staff." },
-                { name: "Remind clinicians", cluster: "Support Clinicians", definition: "Developing and integrating reminder systems (e.g., alerts in the EHR, checklists) designed to prompt clinicians to use the EBI at the point of care." },
-                { name: "Involve patients/consumers", cluster: "Engage Consumers", definition: "Actively engaging or including consumers and their families in various aspects of the implementation effort." },
-                { name: "Alter incentive/allowance structures", cluster: "Utilize Financial Strategies", definition: "Working to incentivize the adoption and implementation of the EBI, for example, through pay-for-performance programs." },
-                { name: "Change record systems", cluster: "Change Infrastructure", definition: "Making changes to electronic health records or other data systems to better support the EBI." }
-            ];
+        function renderLearnStrategies() {
+            const container = document.getElementById('learn');
+            container.innerHTML = `
+                ${createLearnBackLink()}
+                <div class="card p-8 learn-content">
+                    <h1 class="text-3xl font-bold page-title mb-6">Implementation Strategies (ERIC)</h1>
+                    <p>Implementation strategies are the "how-to" of creating change. The Expert Recommendations for Implementing Change (ERIC) project produced a compilation of 73 discrete strategies, organized into 9 clusters.</p>
+                    
+                    <div class="my-6">
+                        <input type="text" id="eric-search-input" onkeyup="filterEricStrategies()" placeholder="Search for a strategy (e.g., 'feedback')...">
+                    </div>
 
-            container.innerHTML = `
-                ${createLearnBackLink()}
-                <div class="card p-8 learn-content">
-                    <h1 class="text-3xl font-bold page-title mb-6">Implementation Strategies (ERIC)</h1>
-                    <p>Implementation strategies are the "how-to" of creating change. The Expert Recommendations for Implementing Change (ERIC) project produced a compilation of 73 discrete strategies, organized into 9 clusters.</p>
-                    
-                    <div class="my-6">
-                        <input type="text" id="eric-search-input" onkeyup="filterEricStrategies()" placeholder="Search for a strategy (e.g., 'feedback')...">
-                    </div>
+                    <div id="eric-search-results"></div>
+                </div>
+            `;
+            
+            window.filterEricStrategies = () => {
+                const searchTerm = document.getElementById('eric-search-input').value.toLowerCase();
+                const filtered = ERIC_STRATEGIES.filter(s => s.name.toLowerCase().includes(searchTerm) || s.definition.toLowerCase().includes(searchTerm));
+                renderEricResults(filtered);
+            };
 
-                    <div id="eric-search-results"></div>
-                </div>
-            `;
-            
-            window.filterEricStrategies = () => {
-                const searchTerm = document.getElementById('eric-search-input').value.toLowerCase();
-                const filtered = allStrategies.filter(s => s.name.toLowerCase().includes(searchTerm) || s.definition.toLowerCase().includes(searchTerm));
-                renderEricResults(filtered);
-            };
+            window.renderEricResults = (strategies) => {
+                const resultsContainer = document.getElementById('eric-search-results');
+                if (strategies.length === 0) {
+                    resultsContainer.innerHTML = `<p class="text-center text-text-light p-4">No strategies found.</p>`;
+                    return;
+                }
+                resultsContainer.innerHTML = strategies.map(s => `
+                    <div class="p-4 strategy-item">
+                        <p class="font-semibold">${s.name}</p>
+                        <p class="text-sm text-text-light">${s.definition}</p>
+                        <p class="text-xs mt-1 font-medium text-blue-700">Cluster: ${s.cluster}</p>
+                    </div>
+                `).join('');
+            };
 
-            window.renderEricResults = (strategies) => {
-                const resultsContainer = document.getElementById('eric-search-results');
-                if (strategies.length === 0) {
-                    resultsContainer.innerHTML = `<p class="text-center text-text-light p-4">No strategies found.</p>`;
-                    return;
-                }
-                resultsContainer.innerHTML = strategies.map(s => `
-                    <div class="p-4 strategy-item">
-                        <p class="font-semibold">${s.name}</p>
-                        <p class="text-sm text-text-light">${s.definition}</p>
-                        <p class="text-xs mt-1 font-medium text-blue-700">Cluster: ${s.cluster}</p>
-                    </div>
-                `).join('');
-            };
+            renderEricResults(ERIC_STRATEGIES);
+        }
 
-            renderEricResults(allStrategies);
-        }
+        function renderLearnOutcomes() {
+            const container = document.getElementById('learn');
+            const outcomes = [
+                { name: "Acceptability", def: "The perception among stakeholders that a given innovation is agreeable, palatable, or satisfactory." },
+                { name: "Adoption", def: "The intention, initial decision, or action to try or employ an innovation." },
+                { name: "Appropriateness", def: "The perceived fit, relevance, or compatibility of the innovation for a given setting." },
+                { name: "Feasibility", def: "The extent to which an innovation can be successfully used or carried out within a given setting." },
+                { name: "Fidelity", def: "The degree to which an intervention was implemented as it was prescribed." },
+                { name: "Implementation Cost", def: "The cost impact of an implementation effort." },
+                { name: "Penetration", def: "The integration of a practice within a service setting and its subsystems." },
+                { name: "Sustainability", def: "The extent to which an innovation is maintained or institutionalized." },
+            ];
 
-        function renderLearnOutcomes() {
-            const container = document.getElementById('learn');
-            const outcomes = [
-                { name: "Acceptability", def: "The perception among stakeholders that a given innovation is agreeable, palatable, or satisfactory." },
-                { name: "Adoption", def: "The intention, initial decision, or action to try or employ an innovation." },
-                { name: "Appropriateness", def: "The perceived fit, relevance, or compatibility of the innovation for a given setting." },
-                { name: "Feasibility", def: "The extent to which an innovation can be successfully used or carried out within a given setting." },
-                { name: "Fidelity", def: "The degree to which an intervention was implemented as it was prescribed." },
-                { name: "Implementation Cost", def: "The cost impact of an implementation effort." },
-                { name: "Penetration", def: "The integration of a practice within a service setting and its subsystems." },
-                { name: "Sustainability", def: "The extent to which an innovation is maintained or institutionalized." },
-            ];
+            container.innerHTML = `
+                ${createLearnBackLink()}
+                <div class="card p-8 learn-content">
+                    <h1 class="text-3xl font-bold page-title mb-6">Measuring Success: Implementation Outcomes</h1>
+                    <h2>Beyond Health Outcomes</h2>
+                    <p>Implementation outcomes are the effects of deliberate actions to implement new practices. They are the necessary preconditions for attaining desired health outcomes.</p>
+                    <blockquote>When an EBI fails to produce the desired health outcomes, it is essential to determine the cause. Was it an <strong>intervention failure</strong>, or an <strong>implementation failure</strong>? Measuring implementation outcomes helps answer this.</blockquote>
+                    
+                    <h2>Proctor's Taxonomy of Implementation Outcomes</h2>
+                    <p>This framework provides a common language for conceptualizing and evaluating implementation success. Click each outcome to learn more.</p>
+                    <div class="space-y-2 mt-4">
+                        ${outcomes.map(o => `
+                            <details class="bg-gray-50 rounded-lg">
+                                <summary class="p-4 font-semibold">${o.name}</summary>
+                                <div class="p-4 border-t">
+                                    <p>${o.def}</p>
+                                </div>
+                            </details>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
 
-            container.innerHTML = `
-                ${createLearnBackLink()}
-                <div class="card p-8 learn-content">
-                    <h1 class="text-3xl font-bold page-title mb-6">Measuring Success: Implementation Outcomes</h1>
-                    <h2>Beyond Health Outcomes</h2>
-                    <p>Implementation outcomes are the effects of deliberate actions to implement new practices. They are the necessary preconditions for attaining desired health outcomes.</p>
-                    <blockquote>When an EBI fails to produce the desired health outcomes, it is essential to determine the cause. Was it an <strong>intervention failure</strong>, or an <strong>implementation failure</strong>? Measuring implementation outcomes helps answer this.</blockquote>
-                    
-                    <h2>Proctor's Taxonomy of Implementation Outcomes</h2>
-                    <p>This framework provides a common language for conceptualizing and evaluating implementation success. Click each outcome to learn more.</p>
-                    <div class="space-y-2 mt-4">
-                        ${outcomes.map(o => `
-                            <details class="bg-gray-50 rounded-lg">
-                                <summary class="p-4 font-semibold">${o.name}</summary>
-                                <div class="p-4 border-t">
-                                    <p>${o.def}</p>
-                                </div>
-                            </details>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
+        function checkQuizAnswer(element, type) {
+            const feedbackEl = document.getElementById('quiz-feedback');
+            document.querySelectorAll('.quiz-option').forEach(el => {
+                el.classList.remove('selected', 'correct', 'incorrect');
+                el.onclick = null; // Disable further clicks
+            });
+            element.classList.add('selected');
+            if (type === 'correct') {
+                element.classList.add('correct');
+                feedbackEl.textContent = "Correct! Implementation is the active process of putting an intervention into effect.";
+                feedbackEl.style.color = 'var(--success-color)';
+            } else {
+                element.classList.add('incorrect');
+                feedbackEl.textContent = "Not quite. Dissemination is about spreading information, while implementation is about active integration.";
+                feedbackEl.style.color = 'var(--accent-red)';
+            }
+        }
+        
+        function saveModule(moduleId) {
+            projectData.projectStatus[moduleId] = 'complete';
+            showPage('plan');
+        }
 
-        function checkQuizAnswer(element, type) {
-            const feedbackEl = document.getElementById('quiz-feedback');
-            document.querySelectorAll('.quiz-option').forEach(el => {
-                el.classList.remove('selected', 'correct', 'incorrect');
-                el.onclick = null; // Disable further clicks
-            });
-            element.classList.add('selected');
-            if (type === 'correct') {
-                element.classList.add('correct');
-                feedbackEl.textContent = "Correct! Implementation is the active process of putting an intervention into effect.";
-                feedbackEl.style.color = 'var(--success-color)';
-            } else {
-                element.classList.add('incorrect');
-                feedbackEl.textContent = "Not quite. Dissemination is about spreading information, while implementation is about active integration.";
-                feedbackEl.style.color = 'var(--accent-red)';
-            }
-        }
-        
-        function saveModule(moduleId) {
-            projectData.projectStatus[moduleId] = 'complete';
-            showPage('plan');
-        }
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.remove();
+        }
 
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) modal.remove();
-        }
+        function createInfoTip(text) {
+            if (!text) return '';
+            return `<span class="info-tip" data-info="${text}"><svg xmlns="http://www.w3.org/2000/svg" class="info-tip-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg></span>`;
+        }
 
-        function createInfoTip(text) {
-            if (!text) return '';
-            return `<span class="info-tip" data-info="${text}"><svg xmlns="http://www.w3.org/2000/svg" class="info-tip-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg></span>`;
-        }
-
-        function addInfoTipListeners() {
-            document.querySelectorAll('.info-tip').forEach(tip => {
-                tip.addEventListener('mouseover', (event) => {
-                    const text = tip.dataset.info;
-                    infoTooltip.html(text).style('opacity', 1).style('left', (event.pageX + 10) + 'px').style('top', (event.pageY + 10) + 'px');
-                });
-                tip.addEventListener('mouseout', () => { infoTooltip.style('opacity', 0); });
-            });
-        }
-    </script>
+        function addInfoTipListeners() {
+            document.querySelectorAll('.info-tip').forEach(tip => {
+                tip.addEventListener('mouseover', (event) => {
+                    const text = tip.dataset.info;
+                    infoTooltip.html(text).style('opacity', 1).style('left', (event.pageX + 10) + 'px').style('top', (event.pageY + 10) + 'px');
+                });
+                tip.addEventListener('mouseout', () => { infoTooltip.style('opacity', 0); });
+            });
+        }
+    </script>
 </body>
 </html>
