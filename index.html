@@ -83,7 +83,6 @@
         .cfir-rating-group input[value="2"]:checked + span { background-color: #558B2F; }
 
         /* --- IRLM Styles --- */
-        #irlm-figure { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
         .irlm-column { background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 0.5rem; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
         .irlm-column-title { font-weight: 700; font-size: 1.1rem; color: var(--primary-color); text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 0.5rem; }
         .irlm-subgroup { border: 1px solid #D1D5DB; border-radius: 0.375rem; padding: 0.5rem; }
@@ -116,7 +115,7 @@
         .canvas-container .zoom-controls { position: absolute; bottom: 1rem; right: 1rem; z-index: 20; display: flex; gap: 0.5rem; }
         .canvas-container .clear-btn { position: absolute; top: 1rem; right: 1rem; z-index: 20; }
 
-        /* --- Learn Tab Styles --- */
+        /* --- Learn Tab & ERIC Strategy Styles --- */
         .learn-card { transition: transform 0.2s, box-shadow 0.2s; }
         .learn-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
         .learn-content h2 { font-size: 1.75rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1rem; margin-top: 2rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
@@ -130,6 +129,8 @@
         .interactive-quiz .quiz-option.correct { background-color: #D4EDDA; border-color: #C3E6CB; }
         .interactive-quiz .quiz-option.incorrect { background-color: #F8D7DA; border-color: #F5C6CB; }
         #eric-search-results .strategy-item { border-bottom: 1px solid var(--border-color); }
+        .determinant-list { max-height: 600px; overflow-y: auto; }
+        .strategy-list { max-height: 600px; overflow-y: auto; }
 
         /* --- Read-only preview styles --- */
         .read-only-page .btn-primary, .read-only-page .btn-secondary { display: none; }
@@ -155,7 +156,7 @@
                     <div id="desktop-menu" class="ml-10 flex items-baseline space-x-1">
                         <a id="nav-overview" class="nav-link text-gray-300 px-3 py-2 rounded-md text-sm font-medium flex items-center" onclick="setActiveNav('overview')">
                             <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24-.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22-.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path>
+                                <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69-.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24-.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22-.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path>
                             </svg>
                             Overview
                         </a>
@@ -189,7 +190,7 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a id="nav-mobile-overview" class="mobile-nav-link text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium flex items-center" onclick="setActiveNav('overview')">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24-.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22-.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path>
+                        <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69-.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24-.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22-.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path>
                     </svg>
                     Overview
                 </a>
@@ -225,11 +226,11 @@
         <div id="page-cfir-diagnostic" class="hidden fade-in"></div>
         <div id="page-barrier-prioritizer" class="hidden fade-in"></div>
         <div id="page-readiness-assessor" class="hidden fade-in"></div>
+        <div id="page-explore-eric-strategies" class="hidden fade-in"></div>
         <div id="page-irlm" class="hidden fade-in"></div>
         <div id="page-behavioral-diagnosis" class="hidden fade-in"></div>
         <div id="page-fidelity-planner" class="hidden fade-in"></div>
         <div id="page-costing-planner" class="hidden fade-in"></div>
-        <div id="page-drivers-planner" class="hidden fade-in"></div>
         <div id="page-causal-pathway-diagrammer" class="hidden fade-in"></div>
         <div id="page-adaptations-tracker" class="hidden fade-in"></div>
         <div id="page-pdsa-tracker" class="hidden fade-in"></div>
@@ -246,123 +247,67 @@
     <script>
         // --- DATA & STATE MANAGEMENT ---
         let projectData = {
-            projectName: "IIPE Co-Design & Development",
+            projectName: "New Project",
             projectStatus: {
-                'usable-innovation': 'complete', 'ecosystem-mapper': 'complete', 'cfir-diagnostic': 'complete',
-                'barrier-prioritizer': 'complete', 'readiness-assessor': 'complete', 'irlm': 'incomplete', 'behavioral-diagnosis': 'incomplete',
-                'fidelity-planner': 'incomplete', 'costing-planner': 'incomplete', 'drivers-planner': 'incomplete', 
+                'usable-innovation': 'incomplete', 'ecosystem-mapper': 'incomplete', 'cfir-diagnostic': 'incomplete',
+                'barrier-prioritizer': 'incomplete', 'readiness-assessor': 'incomplete', 'explore-eric-strategies': 'incomplete', 'irlm': 'incomplete', 'behavioral-diagnosis': 'incomplete',
+                'fidelity-planner': 'incomplete', 'costing-planner': 'incomplete', 
                 'causal-pathway-diagrammer': 'incomplete',
                 'outcomes-planner': 'incomplete', 'adaptations-tracker': 'incomplete', 'pdsa-tracker': 'incomplete',
                 'npt-monitor': 'incomplete', 'sustainment-planner': 'incomplete',
             },
             usableInnovation: { 
-                practiceName: "Integrated Implementation Planning Environment (IIPE)", 
-                description: "A free, integrated web-based toolkit to guide implementation research teams through planning, evaluation, and sustainment. The IIPE features a suite of interactive tools and learning modules on core IS concepts.", 
-                components: [
-                    { id: 1, name: "Web-Based Platform", description: "The tool is accessible via a web browser without requiring local installation.", type: 'core' },
-                    { id: 2, name: "Free to Access", description: "There is no cost for individuals or teams to use the tool.", type: 'core' },
-                    { id: 3, name: "Integrated Tool Suite", description: "Modules are interconnected, with outputs from one module informing inputs for another.", type: 'core' },
-                    { id: 4, name: "Visual User Interface Theme", description: "The specific colors, fonts, and layout of the tool.", type: 'adaptable' },
-                    { id: 5, name: "Specific Frameworks Included", description: "The choice of which IS frameworks to include (e.g., CFIR, RE-AIM) can be modified based on user feedback.", type: 'adaptable' },
-                    { id: 6, name: "Learning Module Content", description: "The content and format of the educational modules can be updated or expanded.", type: 'adaptable' }
-                ],
-                projectTeam: [
-                    { id: 1, name: "Cara Antonaccio", role: "Principal Investigator (PI)", responsibilities: "Overall project lead, manages grant, leads conceptual design and research activities." },
-                    { id: 2, name: "Ruben Martinez", role: "Co-Investigator, Technical Lead", responsibilities: "Oversees software development, database architecture, and technical implementation of the IIPE." },
-                    { id: 3, name: "Alethea Desrosiers", role: "Co-Investigator, Content & Methods Expert", responsibilities: "Leads development of learning modules, ensures methodological rigor of tools, and guides content strategy." },
-                    { id: 4, name: "Sunand Bhattacharya", role: "Co-Investigator, Usability/UX Lead", responsibilities: "Leads the co-design process, conducts user testing, and ensures the tool is user-friendly and meets practitioner needs." }
-                ]
+                practiceName: "", 
+                description: "", 
+                components: [],
+                projectTeam: []
             },
-            ecosystemActors: [
-                { id: 1, text: "IIPE Project Team", type: 'group', groupSize: 4, influence: 95, interest: 98, willingness: 'high', familiarity: 100 },
-                { id: 2, text: "Implementation Scientists (Users)", type: 'group', groupSize: 100, influence: 60, interest: 85, willingness: 'high', familiarity: 50 },
-                { id: 3, text: "Implementation Practitioners (Users)", type: 'group', groupSize: 150, influence: 50, interest: 90, willingness: 'high', familiarity: 30 },
-                { id: 4, text: "Funding Agency (e.g., NIH)", type: 'group', groupSize: 10, influence: 90, interest: 70, willingness: 'medium', familiarity: 75 },
-                { id: 5, text: "University IRB", type: 'group', groupSize: 5, influence: 80, interest: 30, willingness: 'medium', familiarity: 60 },
-                { id: 6, text: "Pilot Partner Organizations", type: 'group', groupSize: 20, influence: 40, interest: 75, willingness: 'high', familiarity: 40 }
-            ],
-            ecosystemConnections: [
-                { from: 1, to: 2 }, { from: 1, to: 3 }, { from: 1, to: 4 }, { from: 1, to: 5 }, { from: 1, to: 6 },
-                { from: 2, to: 3 }, { from: 2, to: 4 }
-            ],
+            ecosystemActors: [],
+            ecosystemConnections: [],
             cfirAssessment: { 
-                ratings: {
-                    "RelativeAdvantage": { valence: 2, notes: "The IIPE offers a significant advantage over existing disparate, often paid, tools by integrating multiple planning functions into one free platform." },
-                    "Adaptability": { valence: 1, notes: "The tool is designed to be adaptable, but the core structure is set. Some users may want more customization than is feasible." },
-                    "Complexity": { valence: -1, notes: "While designed for non-experts, the comprehensive nature of the tool could be perceived as complex initially, requiring a learning curve." },
-                    "ImplementationClimate": { valence: 2, notes: "The project team has a strong, shared vision and commitment to the tool's success." },
-                    "ReadinessforImplementation": { valence: 2, notes: "The team has secured funding and possesses the necessary leadership and technical expertise." },
-                    "Planning": { valence: 2, notes: "The project is using a structured co-design process, which constitutes a robust planning phase." },
-                    "Engaging": { valence: 2, notes: "Engaging users via co-design is a central part of the project's methodology." }
-                }, 
+                ratings: {}, 
                 risks: [] 
             },
-            barriers: [
-                { id: 1, text: "Ensuring long-term server hosting and maintenance", importance: 90, addressability: 60, frequency: 100, equityImpact: 20, level: 'Outer Setting', notesImportance: "Crucial for tool's survival post-grant.", notesAddressability: "Depends on future funding or institutional support." },
-                { id: 2, text: "Recruiting a diverse user base for co-design", importance: 85, addressability: 75, frequency: 70, equityImpact: 90, level: 'Process', notesImportance: "Essential for ensuring the tool is equitable and useful for all.", notesEquityImpact: "Failure to include diverse users will perpetuate inequities." },
-                { id: 3, text: "Potential for tool to be perceived as too complex", importance: 80, addressability: 85, frequency: 60, equityImpact: 60, level: 'Intervention Characteristics', notesAddressability: "Can be mitigated with excellent UX design and tutorials." },
-                { id: 4, text: "Managing scope creep during development", importance: 75, addressability: 70, frequency: 50, equityImpact: 10, level: 'Process', notesImportance: "Adding too many features can delay launch and increase complexity." }
-            ],
-            readinessAssessment: { commitment: 95, efficacy: 90, commitmentNotes: "The project team is fully dedicated to this work; it is the primary focus of the grant.", efficacyNotes: "The team consists of experts in IS, methods, and technology. Confidence is high." },
+            barriers: [],
+            readinessAssessment: { commitment: 50, efficacy: 50, commitmentNotes: "", efficacyNotes: "" },
             irlm: { 
-                strategies: [
-                    { id: 1, text: "Conduct iterative usability testing" },
-                    { id: 2, text: "Develop comprehensive tutorials and help guides" },
-                    { id: 3, text: "Form a user advisory board" }
-                ], 
-                mechanisms: [
-                    { id: 1, text: "Increased user self-efficacy" },
-                    { id: 2, text: "Improved perceived usability" }
-                ] 
+                strategies: [], 
+                mechanisms: [] 
             },
             behavioralDiagnosis: { diagnoses: [] },
-            drivers: { 
-                selection: "N/A for a free tool, but we will use targeted outreach to recruit initial user groups from research networks and practice-based associations.", 
-                training: "Develop interactive learning modules within the IIPE. Host a series of introductory webinars upon launch and record them for on-demand viewing.", 
-                coaching: "Create a user community forum for peer-to-peer support. Offer monthly 'office hours' with the development team for the first year.", 
-                dataSystems: "The IIPE itself is the primary data system for users. For our team, we will use back-end analytics to monitor usage patterns and identify areas for improvement.", 
-                adminSupport: "Provide users with pre-formatted text describing the IIPE and its benefits, which they can use in grant proposals or project charters to justify its use to their own leadership.", 
-                systemAdjustments: "The tool is designed to adjust to and guide existing workflows, rather than requiring major system adjustments from the user's organization.",
-                technicalLeadership: "Ruben Martinez will lead an agile development process with bi-weekly sprints. A project manager will track timelines and deliverables using a tool like Jira or Asana.", 
-                adaptiveLeadership: "Cara Antonaccio will lead regular team meetings to address challenges, celebrate progress, and ensure the project remains aligned with its co-design principles and user needs."
-            },
             cpdNodes: [],
             cpdConnections: [],
-            adaptations: [
-                { id: 1, framework: 'frame', date: '2025-07-15T12:00:00Z', data: { 'Date of Modification': '2025-07-15', 'Was the modification planned or unplanned?': 'Unplanned', 'What was modified?': "Changed the 'Barrier Prioritizer' rating scale.", 'Nature of the content modification': 'Based on feedback from the first co-design session, the 1-5 rating scale for barrier importance and addressability was perceived as not granular enough. We changed it to a 0-100 slider to allow for more nuanced prioritization.', 'Who participated in the decision to modify?': 'The full project team, based on a consensus recommendation from the co-design user group.', 'What were the reasons for the modification?': 'To improve the tool\'s face validity and utility for expert users who wanted more precision in their ratings.' } }
-            ],
-            pdsaCycles: [
-                { id: 1, date: '2025-08-01T12:00:00Z', plan: "Test a new 2-minute tutorial video for the Causal Pathway Diagrammer to see if it improves user confidence.", do: "Showed the video to 5 new users from our practitioner network before they used the diagrammer tool.", study: "4 of 5 users reported the video was helpful. However, 3 mentioned that the drag-and-drop linking functionality was not explicitly clear in the video.", act: "We will add a 15-second screen recording clip to the video specifically demonstrating how to create links between nodes. We will test the revised video next week." }
-            ],
+            adaptations: [],
+            pdsaCycles: [],
             outcomes: {
                 logicModel: { 
-                    implementation: ["Acceptability", "Feasibility", "Adoption", "Fidelity"], 
-                    service: ["Quality of implementation plans created"], 
-                    client: ["Eventual success of projects planned with IIPE"] 
+                    implementation: [], 
+                    service: [], 
+                    client: [] 
                 },
                 reAim: {
-                    reach: { metric: "Number of unique users and teams registered.", target: "1,000 users in Year 1", notes: "Tracked via Google Analytics and internal user database." }, 
-                    effectiveness: { metric: "User satisfaction scores (SUS); Quality ratings of generated plans.", target: "SUS score > 75", notes: "Administer System Usability Scale (SUS) survey annually. A panel of IS experts will rate a sample of anonymized plans." },
-                    adoption: { metric: "Number of unique organizations/universities with active users.", target: "100 organizations in Year 1", notes: "Tracked via user registration data." }, 
-                    implementation: { metric: "% of core modules completed per project; Annual cost to maintain the platform.", target: "75% of projects use at least 3 modules", notes: "Monitor module completion rates via analytics. Track server and personnel costs." },
-                    maintenance: { metric: "Number of users active 6 months after registration.", target: "50% user retention at 6 months", notes: "Tracked via login data." },
+                    reach: { metric: "", target: "", notes: "" }, 
+                    effectiveness: { metric: "", target: "", notes: "" },
+                    adoption: { metric: "", target: "", notes: "" }, 
+                    implementation: { metric: "", target: "", notes: "" },
+                    maintenance: { metric: "", target: "", notes: "" },
                 }
             },
             nptAssessment: { 
-                coherence: "Initial feedback from co-design sessions indicates users quickly grasp the value proposition of an integrated tool versus their current fragmented workflows.", 
-                cognitiveParticipation: "Key opinion leaders in IS have agreed to be part of our advisory board, indicating strong buy-in from the research community. Engaging practitioners will require targeted outreach.", 
-                collectiveAction: "A potential challenge is ensuring entire teams use the tool collaboratively, rather than it being used by a single individual on the team. The tool needs features to support team-based work.", 
-                reflexiveMonitoring: "Our plan includes annual user surveys and analytics monitoring to formally appraise the tool's utility and make data-driven improvements." 
+                coherence: "", 
+                cognitiveParticipation: "", 
+                collectiveAction: "", 
+                reflexiveMonitoring: "" 
             },
             sustainmentPlan: { 
-                funding: "Primary strategy: Apply for an NIH R01 grant focused on scaling up and enhancing the IIPE. Secondary strategy: Explore integration into a university core facility with a tiered subscription model (free for individual academic use, paid for large-scale organizational use).", 
-                workforce: "Develop comprehensive technical documentation (e.g., code comments, architecture diagrams) to facilitate hand-off to future developers. Budget for a part-time project manager to handle user support and project coordination post-launch.", 
-                monitoring: "Use Google Analytics to track usage patterns, feature adoption, and user flows. Conduct annual user surveys to gather qualitative feedback on satisfaction and desired features.", 
-                adaptation: "Establish a public feature request board (e.g., using GitHub Issues or a dedicated feedback portal). The project team will review requests quarterly to prioritize the development roadmap.", 
-                policy: "To promote integration, we will develop partnerships with PhD programs and research centers to incorporate the IIPE into their research methods curriculum." 
+                funding: "", 
+                workforce: "", 
+                monitoring: "", 
+                adaptation: "", 
+                policy: "" 
             },
             costingPlan: { activities: [] },
-            finalEvaluationSummary: "This is a new project. Lessons learned from the development and implementation of the IIPE will be summarized here upon project completion to inform future tool development initiatives." 
+            finalEvaluationSummary: "" 
         };
 
         // --- GLOBAL VARIABLES ---
@@ -457,11 +402,11 @@
                 case 'page-cfir-diagnostic': renderCfirDiagnostic(); break;
                 case 'page-barrier-prioritizer': renderBarrierPrioritizer(); break;
                 case 'page-readiness-assessor': renderReadinessAssessor(); break;
+                case 'page-explore-eric-strategies': renderExploreEricStrategies(); break;
                 case 'page-irlm': renderIRLM(); break;
                 case 'page-behavioral-diagnosis': renderBehavioralDiagnosis(); break;
                 case 'page-fidelity-planner': renderFidelityPlanner(); break;
                 case 'page-costing-planner': renderCostingPlanner(); break;
-                case 'page-drivers-planner': renderDriversPlanner(); break;
                 case 'page-causal-pathway-diagrammer': renderCausalPathwayDiagrammer(); break;
                 case 'page-adaptations-tracker': renderAdaptationsTracker(); break;
                 case 'page-pdsa-tracker': renderPDSATracker(); break;
@@ -491,14 +436,14 @@
                     </div>
 
                     <div class="border-t pt-6 mt-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <h2 class="text-xl font-bold section-title">Project Team</h2>
+                        <div class="flex items-center mb-3">
+                            <h2 class="text-xl font-bold section-title mr-4">Project Team</h2>
                             <button class="btn btn-secondary text-sm" onclick="addProjectTeamMember()">Add Member</button>
                         </div>
                         <div id="team-list" class="space-y-3"></div>
                     </div>
 
-                    <div class="mt-8">
+                    <div class="mt-8 flex justify-end">
                         <button class="btn btn-primary" onclick="setActiveNav('plan')">Go to Implementation Plan &rarr;</button>
                     </div>
                 </div>`;
@@ -517,7 +462,7 @@
             const container = document.getElementById('plan');
             const phases = [
                 { name: 'Exploration', modules: ['usable-innovation', 'ecosystem-mapper', 'cfir-diagnostic', 'barrier-prioritizer', 'readiness-assessor'] },
-                { name: 'Preparation', modules: ['irlm', 'behavioral-diagnosis', 'fidelity-planner', 'drivers-planner', 'costing-planner', 'outcomes-planner', 'causal-pathway-diagrammer'] },
+                { name: 'Preparation', modules: ['explore-eric-strategies', 'irlm', 'behavioral-diagnosis', 'fidelity-planner', 'costing-planner', 'outcomes-planner', 'causal-pathway-diagrammer'] },
                 { name: 'Implementation', modules: ['adaptations-tracker', 'pdsa-tracker'] },
                 { name: 'Sustainment', modules: ['npt-monitor', 'sustainment-planner'] }
             ];
@@ -528,11 +473,11 @@
                 'cfir-diagnostic': { title: 'Assess the Context', desc: 'Identify potential barriers and strengths in the environment using the CFIR framework.' },
                 'barrier-prioritizer': { title: 'Prioritize Barriers', desc: 'Systematically identify and prioritize implementation barriers to focus efforts.' },
                 'readiness-assessor': { title: 'Assess Readiness for Change', desc: 'Measure the organization\'s shared commitment and confidence to make this change.' },
+                'explore-eric-strategies': { title: 'Explore ERIC Strategies', desc: 'Select evidence-based strategies to address prioritized determinants.'},
                 'irlm': { title: 'Implementation Research Logic Model', desc: 'Visually map the pathway from determinants to outcomes, linking them with strategies.' },
                 'behavioral-diagnosis': { title: 'Understand Behavior Change', desc: 'Figure out what might prevent people from adopting the new practice using the COM-B model.' },
                 'fidelity-planner': { title: 'Plan for Fidelity', desc: 'Define the core components of the EBP and plan how to measure them.' },
                 'costing-planner': { title: 'Plan for Costs', desc: 'Use activity-based costing to budget for implementation strategies.' },
-                'drivers-planner': { title: 'Plan for Support', desc: 'Plan for the training, coaching, and administrative support needed for success.' },
                 'causal-pathway-diagrammer': { title: 'Causal Pathway Diagram', desc: 'Map the causal links between strategies, mechanisms, and outcomes.' },
                 'outcomes-planner': { title: 'Define & Measure Success', desc: 'Decide what success looks like and how it will be measured (using Proctor and RE-AIM frameworks).' },
                 'adaptations-tracker': { title: 'Track Changes', desc: 'Keep a log of any changes or adaptations made to the plan along the way.' },
@@ -1247,6 +1192,226 @@
             container.innerHTML = `<h3 class="text-xl font-bold section-title mb-3">Suggested Strategies</h3><div class="bg-green-50 border border-green-200 p-4 rounded-lg space-y-3">${strategies.map(s => `<p class="text-green-800">${s}</p>`).join('')}</div>`;
         }
         
+        // --- MODULE: Explore ERIC Strategies (NEW) ---
+        function renderExploreEricStrategies() {
+            const container = document.getElementById('page-explore-eric-strategies');
+            container.innerHTML = `
+                ${createBackLink('plan')}
+                ${createPreviewNotice()}
+                <div class="card p-8">
+                    <h1 class="text-3xl font-bold page-title mb-2">Explore ERIC Strategies</h1>
+                    <p class="text-text-light mb-6">Select implementation strategies from the ERIC compilation to address your prioritized determinants and populate your logic model.</p>
+                    
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1">
+                            <h2 class="text-xl font-bold section-title mb-4">Prioritized Determinants</h2>
+                            <div id="eric-determinants-list" class="determinant-list bg-bg-light p-3 rounded-lg border"></div>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <h2 class="text-xl font-bold section-title mb-4">ERIC Strategy Library</h2>
+                            <input type="text" id="eric-strategy-search" placeholder="Search strategies..." class="mb-4" onkeyup="filterEricStrategySelector()">
+                            <div id="eric-strategy-selector" class="strategy-list pr-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 border-t pt-6 flex justify-end">
+                        <button class="btn btn-primary" onclick="saveModule('explore-eric-strategies')">Save and Mark as Complete</button>
+                    </div>
+                </div>
+            `;
+            renderEricDeterminantsList();
+            renderEricStrategySelector();
+        }
+
+        function renderEricDeterminantsList() {
+            const container = document.getElementById('eric-determinants-list');
+            if (!container) return;
+
+            let facilitatorsHTML = '<div><h3 class="font-semibold text-green-700 mb-2">Facilitators</h3><ul class="list-disc pl-5 space-y-1">';
+            let barriersHTML = '<div class="mt-4"><h3 class="font-semibold text-red-700 mb-2">Barriers</h3><ul class="list-disc pl-5 space-y-1">';
+            let hasFacilitators = false;
+            let hasBarriers = false;
+
+            // From CFIR
+            Object.entries(projectData.cfirAssessment.ratings).forEach(([key, rating]) => {
+                if (rating.valence > 0) {
+                    hasFacilitators = true;
+                    const constructName = key.replace(/([A-Z])/g, ' $1').trim();
+                    facilitatorsHTML += `<li class="text-sm text-gray-700">${constructName}</li>`;
+                } else if (rating.valence < 0) {
+                    hasBarriers = true;
+                    const constructName = key.replace(/([A-Z])/g, ' $1').trim();
+                    barriersHTML += `<li class="text-sm text-gray-700">${constructName}</li>`;
+                }
+            });
+
+            // From Barrier Prioritizer
+            projectData.barriers.forEach(barrier => {
+                hasBarriers = true;
+                barriersHTML += `<li class="text-sm text-gray-700">${barrier.text}</li>`;
+            });
+
+            if (!hasFacilitators) facilitatorsHTML += '<p class="text-sm text-gray-500">No facilitators identified.</p>';
+            if (!hasBarriers) barriersHTML += '<p class="text-sm text-gray-500">No barriers identified.</p>';
+
+            facilitatorsHTML += '</ul></div>';
+            barriersHTML += '</ul></div>';
+
+            container.innerHTML = facilitatorsHTML + barriersHTML;
+        }
+
+        function filterEricStrategySelector() {
+            const searchTerm = document.getElementById('eric-strategy-search').value.toLowerCase();
+            const allStrategies = document.querySelectorAll('#eric-strategy-selector .strategy-item-wrapper');
+            const allClusters = document.querySelectorAll('#eric-strategy-selector details');
+
+            allStrategies.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                const definition = item.dataset.definition.toLowerCase();
+                if (name.includes(searchTerm) || definition.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Open/close clusters based on visible children
+            allClusters.forEach(cluster => {
+                const visibleChildren = cluster.querySelectorAll('.strategy-item-wrapper:not([style*="display: none"])');
+                if (searchTerm && visibleChildren.length > 0) {
+                    cluster.open = true;
+                } else if (searchTerm) {
+                    cluster.open = false;
+                }
+                if (visibleChildren.length === 0) {
+                    cluster.style.display = 'none';
+                } else {
+                    cluster.style.display = '';
+                }
+            });
+        }
+
+        const ERIC_STRATEGIES = [
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Assess for readiness and identify barriers and facilitators", definition: "Assess various aspects of an organization to determine its degree of readiness to implement, barriers that may impede implementation, and strengths that can be used in the implementation effort" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Audit and provide feedback", definition: "Collect and summarize clinical performance data over a specified time period and give it to clinicians and administrators to monitor, evaluate, and modify provider behavior" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Capture and share local knowledge", definition: "Capture local knowledge from implementation sites on how implementers and clinicians made something work in their setting and then share it with other sites" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Conduct cyclical small tests of change", definition: "Implement changes in a cyclical fashion using small tests of change before taking changes system-wide. Tests of change benefit from systematic measurement, and results of the tests of change are studied for insights on how to do better. This process continues serially over time, and refinement is added with each cycle" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Conduct local consensus discussions", definition: "Include local providers and other stakeholders in discussions that address whether the chosen problem is important and whether the clinical innovation to address it is appropriate" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Conduct local needs assessment", definition: "Collect and analyze data related to the need for the innovation" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Obtain and use patient/consumer and family feedback", definition: "Develop strategies to increase patient/consumer and family feedback on the implementation effort" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Organize clinician implementation team meetings", definition: "Develop and support teams of clinicians who are implementing the innovation and give them protected time to reflect on the implementation effort, share lessons learned, and support one another's learning" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Purposefully reexamine the implementation", definition: "Monitor progress and adjust clinical practices and implementation strategies to continuously improve the quality of care" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Use data warehousing techniques", definition: "Integrate clinical records across facilities and organizations to facilitate implementation across systems" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Use an implementation advisor", definition: "Seek guidance from experts in implementation" },
+            { cluster: "Use Evaluative and Iterative Strategies", name: "Use data experts", definition: "Involve, hire, and/or consult experts to inform management on the use of data generated by implementation efforts" },
+            { cluster: "Provide Interactive Assistance", name: "Centralize technical assistance", definition: "Develop and use a centralized system to deliver technical assistance focused on implementation issues" },
+            { cluster: "Provide Interactive Assistance", name: "Facilitation", definition: "A process of interactive problem solving and support that occurs in a context of a recognized need for improvement and a supportive interpersonal relationship" },
+            { cluster: "Provide Interactive Assistance", name: "Provide clinical supervision", definition: "Provide clinicians with ongoing supervision focusing on the innovation. Provide training for clinical supervisors who will supervise clinicians who provide the innovation" },
+            { cluster: "Provide Interactive Assistance", name: "Provide local technical assistance", definition: "Develop and use a system to deliver technical assistance focused on implementation issues using local personnel" },
+            { cluster: "Provide Interactive Assistance", name: "Provide ongoing consultation", definition: "Provide ongoing consultation with one or more experts in the strategies used to support implementing the innovation" },
+            { cluster: "Adapt and Tailor to Context", name: "Promote adaptability", definition: "Identify the ways a clinical innovation can be tailored to meet local needs and clarify which elements of the innovation must be maintained to preserve fidelity" },
+            { cluster: "Adapt and Tailor to Context", name: "Tailor strategies", definition: "Tailor the implementation strategies to address barriers and leverage facilitators that were identified through earlier data collection" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Build a coalition", definition: "Recruit and cultivate relationships with partners in the implementation effort" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Develop academic partnerships", definition: "Partner with a university or academic unit for the purposes of shared training and bringing research skills to an implementation project" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Identify and prepare champions", definition: "Identify and prepare individuals who dedicate themselves to supporting, marketing and driving through an implementation, overcoming indifference or resistance that the intervention may provoke in an organization" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Identify early adopters", definition: "Identify early adopters at the local site to learn from their experiences with the practice innovation" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Inform local opinion leaders", definition: "Inform providers identified by colleagues as opinion leaders or 'educationally influential' about the clinical innovation in the hopes that they will influence colleagues to adopt it" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Involve executive boards", definition: "Involve existing governing structures (e.g., boards of directors, medical staff boards of governance) in the implementation effort, including the review of data on implementation processes" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Involve patients/consumers and family members", definition: "Engage or include patients/consumers and families in the implementation effort" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Promote network weaving", definition: "Identify and build on existing high-quality working relationships and networks within and outside the organization, organizational units, teams, etc. to promote information sharing, collaborative problem-solving, and a shared vision/goal related to implementing the innovation" },
+            { cluster: "Develop Stakeholder Interrelationships", name: "Use advisory boards and workgroups", definition: "Create and engage a formal group of multiple kinds of stakeholders to provide input and advice on implementation efforts and to elicit recommendations for improvements" },
+            { cluster: "Train and Educate Stakeholders", name: "Conduct educational meetings", definition: "Hold meetings targeted toward different stakeholder groups (e.g., providers, administrators, other organizational stakeholders, and community, patient/consumer, and family stakeholders) to teach them about the clinical innovation" },
+            { cluster: "Train and Educate Stakeholders", name: "Conduct educational outreach visits", definition: "Have a trained person meet with providers in their practice settings to educate providers about the clinical innovation with the intent of changing the provider's practice" },
+            { cluster: "Train and Educate Stakeholders", name: "Conduct ongoing training", definition: "Plan for and conduct training in the clinical innovation in an ongoing way" },
+            { cluster: "Train and Educate Stakeholders", name: "Create a learning collaborative", definition: "Facilitate the formation of groups of providers or provider organizations and foster a collaborative learning environment to improve implementation of the clinical innovation" },
+            { cluster: "Train and Educate Stakeholders", name: "Develop educational materials", definition: "Develop and format manuals, toolkits, and other supporting materials in ways that make it easier for stakeholders to learn about the innovation and for clinicians to learn how to deliver the clinical innovation" },
+            { cluster: "Train and Educate Stakeholders", name: "Distribute educational materials", definition: "Distribute educational materials (including guidelines, manuals, and toolkits) in person, by mail, and/or electronically" },
+            { cluster: "Train and Educate Stakeholders", name: "Make training dynamic", definition: "Vary the information delivery methods to cater to different learning styles and work contexts, and shape the training in the innovation to be interactive" },
+            { cluster: "Train and Educate Stakeholders", name: "Shadow other experts", definition: "Provide ways for key individuals to directly observe experienced people engage with or use the targeted practice change/innovation" },
+            { cluster: "Train and Educate Stakeholders", name: "Use train-the-trainer strategies", definition: "Train designated clinicians or organizations to train others in the clinical innovation" },
+            { cluster: "Train and Educate Stakeholders", name: "Visit other sites", definition: "Visit sites where a similar implementation effort has been considered successful" },
+            { cluster: "Train and Educate Stakeholders", name: "Work with educational institutions", definition: "Encourage educational institutions to train clinicians in the innovation" },
+            { cluster: "Support Clinicians", name: "Change physical structure and equipment", definition: "Evaluate current configurations and adapt, as needed, the physical structure and/or equipment (e.g., changing the layout of a room, adding equipment) to best accommodate the targeted innovation" },
+            { cluster: "Support Clinicians", name: "Create new clinical teams", definition: "Change who serves on the clinical team, adding different disciplines and different skills to make it more likely that the clinical innovation is delivered (or is more successfully delivered)" },
+            { cluster: "Support Clinicians", name: "Develop an implementation glossary", definition: "Develop and distribute a list of terms describing the innovation, implementation, and stakeholders in the organizational change" },
+            { cluster: "Support Clinicians", name: "Develop and implement tools for quality monitoring", definition: "Develop, test, and introduce into quality-monitoring systems the right input-the appropriate language, protocols, algorithms, standards, and measures (of processes patient/consumer outcomes, and implementation outcomes) that are often specific to the innovation being implemented" },
+            { cluster: "Support Clinicians", name: "Develop and organize quality monitoring systems", definition: "Develop and organize systems and procedures that monitor clinical processes and/or outcomes for the purpose of quality assurance and improvement" },
+            { cluster: "Support Clinicians", name: "Facilitate relay of clinical data to providers", definition: "Provide as close to real-time data as possible about key measures of process/outcomes using integrated modes/channels of communication in a way that promotes use of the targeted innovation" },
+            { cluster: "Support Clinicians", name: "Model and simulate change", definition: "Model or simulate the change that will be implemented prior to implementation" },
+            { cluster: "Support Clinicians", name: "Remind clinicians", definition: "Develop reminder systems designed to help clinicians to recall information and/or prompt them to use the clinical innovation" },
+            { cluster: "Support Clinicians", name: "Revise professional roles", definition: "Shift and revise roles among professionals who provide care, and redesign job characteristics" },
+            { cluster: "Engage Consumers", name: "Intervene with patients/consumers to enhance uptake and adherence", definition: "Develop strategies with patients to encourage and problem solve around adherence" },
+            { cluster: "Engage Consumers", name: "Prepare patients/consumers to be active participants", definition: "Prepare patients/consumers to be active in their care, to ask questions, and specifically to inquire about care guidelines, the evidence behind clinical decisions, or about available evidence-supported treatments" },
+            { cluster: "Use Financial Strategies", name: "Access new funding", definition: "Access new or existing money to facilitate the implementation" },
+            { cluster: "Use Financial Strategies", name: "Alter incentive/allowance structures", definition: "Work to incentivize the adoption and implementation of the clinical innovation" },
+            { cluster: "Use Financial Strategies", name: "Alter patient/consumer fees", definition: "Create fee structures where patients/consumers pay less for preferred treatments (the clinical innovation) and more for less-preferred treatments" },
+            { cluster: "Use Financial Strategies", name: "Develop disincentives", definition: "Provide financial disincentives for failure to implement or use the clinical innovations" },
+            { cluster: "Use Financial Strategies", name: "Fund and contract for the clinical innovation", definition: "Governments and other payers of services issue requests for proposals to deliver the innovation, use contracting processes to motivate providers to deliver the clinical innovation, and develop new funding formulas that make it more likely that providers will deliver the innovation" },
+            { cluster: "Use Financial Strategies", name: "Increase demand", definition: "Attempt to influence the market for the clinical innovation to increase competition intensity and to increase the maturity of the market for the clinical innovation" },
+            { cluster: "Use Financial Strategies", name: "Make billing easier", definition: "Make it easier to bill for the clinical innovation" },
+            { cluster: "Use Financial Strategies", name: "Place innovation on fee for service lists/formularies", definition: "Work to place the clinical innovation on lists of actions for which providers can be reimbursed (e.g., a drug is placed on a formulary, a procedure is now reimbursable)" },
+            { cluster: "Use Financial Strategies", name: "Use capitated payments", definition: "Pay providers or care systems a set amount per patient/consumer for delivering clinical care" },
+            { cluster: "Use Financial Strategies", name: "Use other payment schemes", definition: "Introduce payment approaches (in a catch-all category)" },
+            { cluster: "Change Infrastructure", name: "Change accreditation or membership requirements", definition: "Strive to alter accreditation standards so that they require or encourage use of the clinical innovation. Work to alter membership organization requirements so that those who want to affiliate with the organization are encouraged or required to use the clinical innovation" },
+            { cluster: "Change Infrastructure", name: "Change liability laws", definition: "Participate in liability reform efforts that make clinicians more willing to deliver the clinical innovation" },
+            { cluster: "Change Infrastructure", name: "Change record systems", definition: "Change records systems to allow better assessment of implementation or clinical outcomes" },
+            { cluster: "Change Infrastructure", name: "Change service sites", definition: "Change the location of clinical service sites to increase access" },
+            { cluster: "Change Infrastructure", name: "Create or change credentialing and/or licensure standards", definition: "Create an organization that certifies clinicians in the innovation or encourage an existing organization to do so. Change governmental professional certification or licensure requirements to include delivering the innovation. Work to alter continuing education requirements to shape professional practice toward the innovation" },
+            { cluster: "Change Infrastructure", name: "Develop a formal implementation blueprint", definition: "Develop a formal implementation blueprint that includes all goals and strategies. The blueprint should include the following: 1) aim/purpose of the implementation; 2) scope of the change (e.g., what organizational units are affected); 3) timeframe and milestones; and 4) appropriate performance/progress measures. Use and update this plan to guide the implementation effort over time" },
+            { cluster: "Change Infrastructure", name: "Develop resource sharing agreements", definition: "Develop partnerships with organizations that have resources needed to implement the innovation" },
+            { cluster: "Change Infrastructure", name: "Mandate change", definition: "Have leadership declare the priority of the innovation and their determination to have it implemented" },
+            { cluster: "Change Infrastructure", name: "Obtain formal commitments", definition: "Obtain written commitments from key partners that state what they will do to implement the innovation" },
+            { cluster: "Change Infrastructure", name: "Start a dissemination organization", definition: "Identify or start a separate organization that is responsible for disseminating the clinical innovation. It could be a for-profit or non-profit organization" },
+            { cluster: "Use Mass Media", name: "Use mass media", definition: "Use media to reach large numbers of people to spread the word about the clinical innovation" }
+        ];
+
+        function renderEricStrategySelector() {
+            const container = document.getElementById('eric-strategy-selector');
+            if (!container) return;
+            
+            const groupedStrategies = ERIC_STRATEGIES.reduce((acc, strategy) => {
+                (acc[strategy.cluster] = acc[strategy.cluster] || []).push(strategy);
+                return acc;
+            }, {});
+
+            container.innerHTML = Object.entries(groupedStrategies).map(([cluster, strategies]) => {
+                return `
+                    <details class="bg-white border rounded-lg mb-2">
+                        <summary class="p-3 font-semibold flex justify-between items-center text-primary-color">${cluster} <svg class="details-caret h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></summary>
+                        <div class="p-3 border-t">
+                            ${strategies.map(strategy => {
+                                const isSelected = projectData.irlm.strategies.some(s => s.text === strategy.name);
+                                return `
+                                <div class="strategy-item-wrapper py-2 border-b last:border-b-0" data-name="${strategy.name}" data-definition="${strategy.definition}">
+                                    <label class="flex items-start space-x-3">
+                                        <input type="checkbox" class="mt-1" ${isSelected ? 'checked' : ''} onchange="toggleIrlmStrategy(this, '${strategy.name}')">
+                                        <span class="flex-1">
+                                            <span class="font-medium">${strategy.name}</span>
+                                            ${createInfoTip(strategy.definition)}
+                                        </span>
+                                    </label>
+                                </div>
+                                `
+                            }).join('')}
+                        </div>
+                    </details>
+                `;
+            }).join('');
+            addInfoTipListeners();
+        }
+
+        function toggleIrlmStrategy(checkbox, strategyName) {
+            if (checkbox.checked) {
+                // Add if not already present
+                if (!projectData.irlm.strategies.some(s => s.text === strategyName)) {
+                    projectData.irlm.strategies.push({ id: Date.now(), text: strategyName });
+                }
+            } else {
+                // Remove
+                projectData.irlm.strategies = projectData.irlm.strategies.filter(s => s.text !== strategyName);
+            }
+        }
+
         // --- MODULE: IRLM ---
         function renderIRLM() {
             const container = document.getElementById('page-irlm');
@@ -1257,6 +1422,10 @@
                     <h1 class="text-3xl font-bold page-title mb-2">Implementation Research Logic Model</h1>
                     <p class="text-text-light mb-6">This logic model visually connects determinants, strategies, mechanisms, and outcomes based on inputs from other modules.</p>
                     
+                    <div class="flex justify-end mb-4">
+                        <button class="btn btn-secondary" onclick="showPage('page-explore-eric-strategies')">Edit Strategies</button>
+                    </div>
+
                     <h2 class="text-2xl font-bold section-title mt-6 mb-4">Logic Model Figure</h2>
                     <div id="irlm-figure" class="w-full border rounded-lg p-4 bg-white overflow-x-auto">
                         <!-- D3 will render the figure here -->
@@ -1264,20 +1433,15 @@
 
                     <div class="grid md:grid-cols-2 gap-8 mt-8">
                         <div>
-                            <h2 class="text-2xl font-bold section-title mb-4">Implementation Strategies</h2>
-                             <div id="irlm-strategies-list" class="space-y-2 mb-3"></div>
-                             <div class="flex">
-                                <input type="text" id="irlm-strategy-input" placeholder="Add a new strategy..." class="rounded-r-none">
-                                <button class="btn btn-secondary rounded-l-none text-sm" onclick="addIrlmItem('strategies')">Add</button>
-                            </div>
-                        </div>
-                        <div>
                             <h2 class="text-2xl font-bold section-title mb-4">Mechanisms</h2>
                             <div id="irlm-mechanisms-list" class="space-y-2 mb-3"></div>
                              <div class="flex">
                                 <input type="text" id="irlm-mechanism-input" placeholder="Add a new mechanism..." class="rounded-r-none">
                                 <button class="btn btn-secondary rounded-l-none text-sm" onclick="addIrlmItem('mechanisms')">Add</button>
                             </div>
+                        </div>
+                        <div>
+                            <!-- Placeholder for future content or can be removed -->
                         </div>
                     </div>
 
@@ -1345,7 +1509,7 @@
             // -- Determinants Column --
             const detCol = figure.append('div').attr('class', 'irlm-column');
             detCol.append('div').attr('class', 'irlm-column-title').text('Determinants');
-            Object.keys(determinants).forEach(level => {
+            Object.keys(determinants).sort().forEach(level => {
                 if (determinants[level].length > 0) {
                     const group = detCol.append('div').attr('class', 'irlm-subgroup');
                     group.append('div').attr('class', 'irlm-subgroup-title').text(level);
@@ -1381,7 +1545,7 @@
             };
 
             Object.values(outSubCols).forEach(subColData => {
-                 if (subColData.items.length > 0) {
+                 if (subColData.items && subColData.items.length > 0) {
                     const group = outCol.append('div').attr('class', 'irlm-subgroup');
                     group.append('div').attr('class', 'irlm-subgroup-title').text(subColData.title);
                     const list = group.append('div').attr('class', 'space-y-2');
@@ -1393,7 +1557,7 @@
         }
         
         function renderIrlmLists() {
-            ['strategies', 'mechanisms'].forEach(type => {
+            ['mechanisms'].forEach(type => { // Only rendering mechanisms now
                 const list = document.getElementById(`irlm-${type}-list`);
                 if (!list) return;
                 list.innerHTML = projectData.irlm[type].map(item => `
