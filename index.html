@@ -6,7 +6,7 @@
     <title>iSense Project: A Design Thinking Journey</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -35,12 +35,12 @@
 
         <header class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-2" style="color: #5390D9;">The iSense Project</h1>
-            <p class="text-xl md:text-2xl text-gray-700">iSense Project</p>
+            <p class="text-xl md:text-2xl text-gray-700">A 6-Week Design Thinking Journey</p>
         </header>
 
         <section class="mb-12">
             <p class="text-lg text-center max-w-3xl mx-auto mb-10">
-                This timeline visualizes the 6-week undergraduate project focused on the "iSense challenge." Following the five phases of Design Thinking, teams will move from understanding the core problem for "Maria & Shawna" to developing and pitching a tangible "Calming Kit Bundle" concept.
+                This timeline visualizes the 6-week undergraduate project focused on the "iSense challenge." Following the five phases of Design Thinking, teams moved from understanding the core problem for "Maria & Shawna" to developing and pitching a tangible "Calming Kit Bundle" concept.
             </p>
             
             <div class="grid grid-cols-3 gap-4 text-center mb-12">
@@ -59,42 +59,11 @@
             </div>
 
             <div class="w-full bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-3xl font-semibold text-center mb-6" style="color: #5E60CE;">Project Workflow</h2>
-                <div class="flex flex-col md:flex-row justify-between text-center">
-
-                    <div class="flex-1 p-3">
-                        <div class="p-4 rounded-lg border-2" style="border-color: #5390D9; background-color: #F0F9FF;">
-                            <div class="font-bold text-lg" style="color: #5390D9;">1-2: Discover & Define</div>
-                            <div class="text-sm text-gray-700">Weeks 1-2</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex-shrink-0 self-center text-2xl mx-4 my-2 md:my-0" style="color: #5390D9;">&rarr;</div>
-                    
-                    <div class="flex-1 p-3">
-                        <div class="p-4 rounded-lg border-2" style="border-color: #48BFE3; background-color: #EBFDFF;">
-                            <div class="font-bold text-lg" style="color: #48BFE3;">3: Ideate</div>
-                            <div class="text-sm text-gray-700">Week 3</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex-shrink-0 self-center text-2xl mx-4 my-2 md:my-0" style="color: #48BFE3;">&rarr;</div>
-
-                    <div class="flex-1 p-3">
-                        <div class="p-4 rounded-lg border-2" style="border-color: #64DFDF; background-color: #E6FFFA;">
-                            <div class="font-bold text-lg" style="color: #64DFDF;">4: Prototype & Test</div>
-                            <div class="text-sm text-gray-700">Week 4</div>
-                        </div>
-                    </div>
-
-                    <div class="flex-shrink-0 self-center text-2xl mx-4 my-2 md:my-0" style="color: #64DFDF;">&rarr;</div>
-
-                    <div class="flex-1 p-3">
-                        <div class="p-4 rounded-lg border-2" style="border-color: #72EFDD; background-color: #DFFFFC;">
-                            <div class="font-bold text-lg" style="color: #72EFDD;">5: Finalize & Present</div>
-                            <div class="text-sm text-gray-700">Week 6</div>
-                        </div>
-                    </div>
+                <h2 class="text-3xl font-semibold text-center mb-6" style="color: #5E60CE;">Project Timeline Gantt Chart</h2>
+                <p class="text-center text-gray-700 mb-4">This Gantt chart provides a granular view of the duration and sequencing of the core Design Thinking phases across the six weeks, including the dedicated Iteration and refinement period in Week 5. The horizontal axis represents the project timeline.</p>
+                <!-- Gantt Chart Container (Overridden max-width for full span) -->
+                <div class="chart-container" style="height: 400px; max-height: 400px; max-width: 100%; margin: 0 auto;">
+                    <canvas id="ganttChart"></canvas>
                 </div>
             </div>
         </section>
@@ -239,6 +208,93 @@
                     }
                 }
             };
+
+            const ganttChartCtx = document.getElementById('ganttChart').getContext('2d');
+            new Chart(ganttChartCtx, {
+                type: 'bar',
+                data: {
+                    // Phases are listed in reverse order (bottom to top of chart)
+                    labels: ['Finalize & Present', 'Iteration (Refinement)', 'Prototype & Test', 'Ideate', 'Discover & Define'],
+                    datasets: [
+                        {
+                            label: 'Preceding Time',
+                            data: [5, 4, 3, 2, 0], // Weeks before the task starts
+                            backgroundColor: 'rgba(243, 244, 246, 0.8)', 
+                            borderColor: 'transparent',
+                            borderWidth: 0,
+                            stack: 'stack0',
+                            pointStyle: false,
+                        },
+                        {
+                            label: 'Phase Duration (Weeks)',
+                            data: [1, 1, 1, 1, 2], // Task duration
+                            backgroundColor: [
+                                '#72EFDD', 
+                                'rgba(100, 223, 223, 0.5)', // Lighter for the implicit Iteration phase
+                                '#64DFDF', 
+                                '#48BFE3', 
+                                '#5390D9'
+                            ],
+                            borderColor: [
+                                '#00A389', 
+                                '#3C9D9B',
+                                '#00C8C8',
+                                '#00BFFF', 
+                                '#1E79C9'
+                            ],
+                            borderWidth: 1,
+                            stack: 'stack0',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', 
+                    scales: {
+                        x: {
+                            min: 0,
+                            max: 6,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value, index, values) {
+                                    return 'Week ' + value;
+                                }
+                            },
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Project Week',
+                                color: '#5E60CE'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                        }
+                    },
+                    plugins: {
+                        ...tooltipTitleCallback.plugins,
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    // Only show the duration bar's label
+                                    if (context.datasetIndex === 1) {
+                                        return context.dataset.label + ': ' + context.parsed.x + ' Week(s)';
+                                    }
+                                    return null;
+                                },
+                                title: function(tooltipItems) {
+                                    // Keep the phase name as the title
+                                    return tooltipItems[0].label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
 
             const hmwChartCtx = document.getElementById('hmwChart').getContext('2d');
             new Chart(hmwChartCtx, {
