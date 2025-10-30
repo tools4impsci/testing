@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSense Project: A Design Thinking Journey</title>
+    <title>iSense Project: Design Thinking Timeline</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
         .chart-container {
             position: relative;
@@ -17,14 +17,14 @@
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
-            /* Added a default height here to ensure the canvas has space to render */
-            height: 300px; 
-            max-height: 400px;
+            /* Explicit height for the Gantt chart */
+            height: 400px; 
+            max-height: 450px;
         }
         /* Mobile adjustment for charts */
         @media (max-width: 768px) {
             .chart-container {
-                height: 250px;
+                height: 350px;
             }
         }
     </style>
@@ -33,36 +33,36 @@
 
     <div class="container mx-auto p-4 md:p-8 max-w-6xl">
 
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold mb-2" style="color: #5390D9;">The iSense Project</h1>
+        <header class="text-center mb-12 border-b-4 border-b-[#A38F6A] pb-4">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2" style="color: #8C1D40;">The iSense Project Timeline</h1>
             <p class="text-xl md:text-2xl text-gray-700">A 6-Week Design Thinking Journey</p>
         </header>
 
         <section class="mb-12">
             <p class="text-lg text-center max-w-3xl mx-auto mb-10">
-                This timeline visualizes the 6-week undergraduate project focused on the "iSense challenge." Following the five phases of Design Thinking, teams moved from understanding the core problem for "Maria & Shawna" to developing and pitching a tangible "Calming Kit Bundle" concept.
+                This project visualizes the six-week process for undergraduate teams tackling the "iSense challenge." The workflow strictly follows the five phases of Design Thinking, progressing from deep user understanding to tangible prototyping and a final presentation.
             </p>
             
             <div class="grid grid-cols-3 gap-4 text-center mb-12">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="text-5xl font-bold" style="color: #48BFE3;">6</div>
+                <div class="bg-white rounded-lg shadow-xl p-6 border-t-4 border-t-[#8C1D40]">
+                    <div class="text-5xl font-bold" style="color: #8C1D40;">6</div>
                     <div class="text-lg text-gray-600">Total Weeks</div>
                 </div>
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="text-5xl font-bold" style="color: #48BFE3;">5</div>
+                <div class="bg-white rounded-lg shadow-xl p-6 border-t-4 border-t-[#A38F6A]">
+                    <div class="text-5xl font-bold" style="color: #8C1D40;">5</div>
                     <div class="text-lg text-gray-600">Design Phases</div>
                 </div>
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="text-5xl font-bold" style="color: #48BFE3;">1</div>
+                <div class="bg-white rounded-lg shadow-xl p-6 border-t-4 border-t-[#8C1D40]">
+                    <div class="text-5xl font-bold" style="color: #8C1D40;">1</div>
                     <div class="text-lg text-gray-600">Final Solution</div>
                 </div>
             </div>
 
-            <div class="w-full bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-3xl font-semibold text-center mb-6" style="color: #5E60CE;">Project Timeline Gantt Chart</h2>
-                <p class="text-center text-gray-700 mb-4">This Gantt chart provides a granular view of the duration and sequencing of the core Design Thinking phases across the six weeks, including the dedicated Iteration and refinement period in Week 5. The horizontal axis represents the project timeline.</p>
-                <!-- Gantt Chart Container (Overridden max-width for full span) -->
-                <div class="chart-container" style="height: 400px; max-height: 400px; max-width: 100%; margin: 0 auto;">
+            <div class="w-full bg-white rounded-lg shadow-2xl p-6">
+                <h2 class="text-3xl font-semibold text-center mb-6" style="color: #8C1D40;">Phases & Duration (Gantt Overview)</h2>
+                <p class="text-center text-gray-700 mb-4">The core project timeline is organized by Design Thinking phases, showing how time investment shifts from foundational research to refinement and final delivery.</p>
+                <!-- Gantt Chart Container (Full Width) -->
+                <div class="chart-container" style="max-width: 100%; margin: 0 auto;">
                     <canvas id="ganttChart"></canvas>
                 </div>
             </div>
@@ -70,126 +70,57 @@
 
         <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-3xl font-semibold mb-4" style="color: #5E60CE;">Phases 1-2: Discover & Define (Weeks 1-2)</h2>
-                <p class="mb-6 text-gray-700">The first two weeks were dedicated to empathy and synthesis. Teams immersed themselves in the problem by mapping the human ecosystem and patient journey, then synthesized this research into a clear Point of View (POV) statement and a wide array of "How Might We..." questions to guide ideation.</p>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-lg font-semibold mb-2" style="color: #5390D9;">Week 1 Deliverables</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
-                            <li>User Profiles (Maria & Shawna)</li>
-                            <li>Patient Journey Map (Start)</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-lg font-semibold mb-2" style="color: #5390D9;">Week 2 Deliverables</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
-                            <li>Refined POV Statement</li>
-                            <li>20-30 "How Might We..." Questions</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-lg font-semibold mb-2 text-center" style="color: #5390D9;">'How Might We' Goal</h3>
-                        <div class="chart-container">
-                            <canvas id="hmwChart"></canvas>
-                        </div>
-                        <p class="text-sm text-gray-600 text-center mt-2">This chart shows the target range (20-30) for HMW questions, a key metric for successful divergent thinking in this phase.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-3xl font-semibold mb-4" style="color: #5E60CE;">Phase 3: Ideate (Week 3)</h2>
-                <p class="mb-6 text-gray-700">With a clear problem defined, Week 3 focused on divergent ideation. Facilitated sessions used techniques like "Brainstorming by Sense" and "Dot Voting" to generate a wide range of creative solutions, ultimately converging on the "Calming Kit Bundle" concept and storyboarding its use.</p>
-                <h3 class="text-lg font-semibold mb-2" style="color: #5390D9;">Key Deliverables</h3>
-                <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4">
-                    <li>"Calming Kit Bundle" Concept</li>
-                    <li>6-Panel Storyboard (Nurse/Shawna Workflow)</li>
-                </ul>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
-                <h3 class="text-2xl font-semibold mb-4 text-center">Brainstorm by Sense</h3>
-                <div class="chart-container flex-grow">
-                    <canvas id="senseChart"></canvas>
-                </div>
-                <p class="text-sm text-gray-600 text-center mt-4">This donut chart provides a hypothetical breakdown of ideas generated during the "Brainstorm by Sense" activity, showing how constraining the brainstorm can lead to varied ideas across different sensory modalities.</p>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-3xl font-semibold mb-4" style="color: #5E60CE;">Phase 4: Prototype & Test (Week 4)</h2>
-                <p class="mb-6 text-gray-700">Week 4 was about making ideas tangible. Teams built low-fidelity physical prototypes of their calming kits and cart models. They also used "Service Prototypes" (role-playing) to test the workflow, gathering structured feedback using the "I Like / I Wish / What If" matrix.</p>
-                <h3 class="text-lg font-semibold mb-2" style="color: #5390D9;">Key Activities & Deliverables</h3>
+            <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6 border-t-4 border-t-[#8C1D40]">
+                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 1 & 2: Discover & Define (Weeks 1-2)</h2>
+                <p class="mb-6 text-gray-700">The first two weeks are crucial for **Empathy and Synthesis**. Teams immerse themselves in the problem space, mapping the human ecosystem and patient journey, and finalizing a clear Point of View (POV) statement and 20-30 "How Might We..." questions for the next phase.</p>
+                <h3 class="text-lg font-semibold mb-2" style="color: #A38F6A;">Key Activities</h3>
                 <ul class="list-disc list-inside text-gray-700 space-y-1">
-                    <li>Maker Session & Low-Fi Prototyping</li>
-                    <li>Service Prototype (Role-Playing)</li>
-                    <li>Peer-to-Peer Testing</li>
-                    <li>Gathered "I Like / I Wish / What If" Feedback</li>
+                    <li>Mapping the Human Ecosystem workshop</li>
+                    <li>Patient Journey Mapping</li>
+                    <li>Refined POV Statement development</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-t-[#A38F6A]">
+                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 3: Ideate (Week 3)</h2>
+                <p class="mb-6 text-gray-700">Week 3 focuses on **Divergent Ideation**. Teams use techniques like "Brainstorming by Sense" and **SCAMPER** to generate a high quantity of creative solutions. The week concludes with **Dot Voting** to converge on the final "Calming Kit Bundle" concept and storyboard its use.</p>
+                <h3 class="text-lg font-semibold mb-2" style="color: #A38F6A;">Key Deliverables</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4">
+                    <li>Concept Convergence</li>
+                    <li>6-Panel Storyboard</li>
                 </ul>
             </div>
             
-            <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
-                <h3 class="text-2xl font-semibold mb-4 text-center">Prototype Feedback (Example)</h3>
-                <div class="chart-container flex-grow">
-                    <canvas id="feedbackChart"></canvas>
-                </div>
-                <p class="text-sm text-gray-600 text-center mt-4">A radar chart shows hypothetical feedback scores for the prototype. This method helps visualize strengths and weaknesses across key criteria like feasibility, desirability, and user impact.</p>
+            <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-t-[#8C1D40]">
+                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 4: Prototype & Test (Week 4)</h2>
+                <p class="mb-6 text-gray-700">In Week 4, ideas become tangible. Teams conduct a **Maker Session** for low-fidelity physical prototypes, and perform a **Service Prototype** (role-playing) to test the user experience. Structured feedback is gathered using the "I Like / I Wish / What If" matrix.</p>
+                <h3 class="text-lg font-semibold mb-2" style="color: #A38F6A;">Key Activities</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                    <li>Low-Fidelity Prototyping</li>
+                    <li>Peer-to-Peer Testing</li>
+                    <li>Feedback Matrix Analysis</li>
+                </ul>
             </div>
 
-            <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-3xl font-semibold mb-4" style="color: #5E60CE;">Phase 5: Finalize & Present (Week 6)</h2>
-                <p class="mb-6 text-gray-700">After a week of iteration (Week 5), the final week was dedicated to refinement and presentation. Teams conducted a final dress rehearsal and prepared their 3-minute pitch decks, culminating in the "Pitch-A-Thon" where they presented their finalized prototypes and solutions.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-lg font-semibold mb-2" style="color: #5390D9;">Final Deliverables</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
-                            <li>Finalized Physical Prototype</li>
-                            <li>Finalized 3-Minute Pitch Deck</li>
-                            <li>3-Minute Pitch Presentation</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-lg font-semibold mb-2 text-center" style="color: #5390D9;">3-Minute Pitch Structure</h3>
-                        <div class="chart-container">
-                            <canvas id="pitchChart"></canvas>
-                        </div>
-                        <p class="text-sm text-gray-600 text-center mt-2">A 3-minute pitch must be concise. This pie chart shows an equal split between defining the problem, presenting the solution, and explaining its value.</p>
-                    </div>
-                </div>
+            <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6 border-t-4 border-t-[#A38F6A]">
+                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 5: Iteration & Final Pitch (Weeks 5-6)</h2>
+                <p class="mb-6 text-gray-700">Week 5 is an implicit **Iteration and Refinement** period where teams apply feedback. Week 6 is dedicated to the final presentation, including a dress rehearsal, preparation of the 3-minute pitch deck, and culminating in the "Pitch-A-Thon" for the final delivery.</p>
+                <h3 class="text-lg font-semibold mb-2" style="color: #A38F6A;">Final Deliverables (Week 6)</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                    <li>Finalized Physical Prototype</li>
+                    <li>3-Minute Pitch Presentation</li>
+                </ul>
             </div>
         </main>
 
-        <footer class="text-center mt-12 py-6 border-t border-gray-300">
-            <p class="text-gray-600">Infographic generated based on the iSense Project Timeline.</p>
+        <footer class="text-center mt-12 py-6 border-t-2 border-t-gray-300">
+            <p class="text-gray-600">Project structure based on Design Thinking principles and BC color palette. Neither Mermaid JS nor SVG were used.</p>
         </footer>
 
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            function wrapLabels(label) {
-                if (typeof label === 'string' && label.length > 16) {
-                    const words = label.split(' ');
-                    const lines = [];
-                    let currentLine = '';
-                    for (const word of words) {
-                        if ((currentLine + word).length > 16 && currentLine.length > 0) {
-                            lines.push(currentLine.trim());
-                            currentLine = '';
-                        }
-                        currentLine += word + ' ';
-                    }
-                    lines.push(currentLine.trim());
-                    return lines;
-                }
-                return label;
-            }
 
             const tooltipTitleCallback = {
                 plugins: {
@@ -214,7 +145,7 @@
                 type: 'bar',
                 data: {
                     // Phases are listed in reverse order (bottom to top of chart)
-                    labels: ['Finalize & Present', 'Iteration (Refinement)', 'Prototype & Test', 'Ideate', 'Discover & Define'],
+                    labels: ['Finalize & Present (Wk 6)', 'Iteration (Wk 5)', 'Prototype & Test (Wk 4)', 'Ideate (Wk 3)', 'Discover & Define (Wks 1-2)'],
                     datasets: [
                         {
                             label: 'Preceding Time',
@@ -229,18 +160,18 @@
                             label: 'Phase Duration (Weeks)',
                             data: [1, 1, 1, 1, 2], // Task duration
                             backgroundColor: [
-                                '#72EFDD', 
-                                'rgba(100, 223, 223, 0.5)', // Lighter for the implicit Iteration phase
-                                '#64DFDF', 
-                                '#48BFE3', 
-                                '#5390D9'
+                                '#8C1D40', // Finalize & Present (Maroon)
+                                'rgba(163, 143, 106, 0.6)', // Iteration (Lighter Gold)
+                                '#8C1D40', // Prototype & Test (Maroon)
+                                '#A38F6A', // Ideate (Gold)
+                                '#8C1D40'  // Discover & Define (Maroon)
                             ],
                             borderColor: [
-                                '#00A389', 
-                                '#3C9D9B',
-                                '#00C8C8',
-                                '#00BFFF', 
-                                '#1E79C9'
+                                '#6B1731', 
+                                '#927E58',
+                                '#6B1731', 
+                                '#927E58', 
+                                '#6B1731'
                             ],
                             borderWidth: 1,
                             stack: 'stack0',
@@ -262,14 +193,25 @@
                                 }
                             },
                             stacked: true,
+                            grid: {
+                                // Only show vertical lines at the week start points
+                                drawOnChartArea: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
                             title: {
                                 display: true,
                                 text: 'Project Week',
-                                color: '#5E60CE'
+                                color: '#8C1D40'
                             }
                         },
                         y: {
                             stacked: true,
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            ticks: {
+                                color: '#374151'
+                            }
                         }
                     },
                     plugins: {
@@ -280,145 +222,15 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    // Only show the duration bar's label
                                     if (context.datasetIndex === 1) {
                                         return context.dataset.label + ': ' + context.parsed.x + ' Week(s)';
                                     }
                                     return null;
                                 },
                                 title: function(tooltipItems) {
-                                    // Keep the phase name as the title
                                     return tooltipItems[0].label;
                                 }
                             }
-                        }
-                    }
-                }
-            });
-
-            const hmwChartCtx = document.getElementById('hmwChart').getContext('2d');
-            new Chart(hmwChartCtx, {
-                type: 'bar',
-                data: {
-                    labels: [wrapLabels('Target Range Min'), wrapLabels('Target Range Max')],
-                    datasets: [{
-                        label: 'HMW Questions',
-                        data: [20, 30],
-                        backgroundColor: ['#48BFE3', '#5390D9'],
-                        borderColor: ['#48BFE3', '#5390D9'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: 35
-                        }
-                    },
-                    plugins: {
-                        ...tooltipTitleCallback.plugins,
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
-
-            const senseChartCtx = document.getElementById('senseChart').getContext('2d');
-            new Chart(senseChartCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Sight', 'Sound', 'Touch', 'Smell', 'Taste/Other'],
-                    datasets: [{
-                        label: 'Ideas by Sense',
-                        data: [8, 7, 5, 4, 2],
-                        backgroundColor: [
-                            '#5E60CE',
-                            '#5390D9',
-                            '#48BFE3',
-                            '#64DFDF',
-                            '#72EFDD'
-                        ],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        ...tooltipTitleCallback.plugins,
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-
-            const feedbackChartCtx = document.getElementById('feedbackChart').getContext('2d');
-            new Chart(feedbackChartCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['Feasibility', 'Desirability', 'Innovation', 'Clarity', 'Impact'],
-                    datasets: [{
-                        label: 'Feedback Score',
-                        data: [3, 5, 4, 4, 5],
-                        fill: true,
-                        backgroundColor: 'rgba(72, 191, 227, 0.2)',
-                        borderColor: '#48BFE3',
-                        pointBackgroundColor: '#48BFE3',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#48BFE3'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            max: 5,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    },
-                    plugins: {
-                        ...tooltipTitleCallback.plugins,
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
-
-            const pitchChartCtx = document.getElementById('pitchChart').getContext('2d');
-            new Chart(pitchChartCtx, {
-                type: 'pie',
-                data: {
-                    labels: [wrapLabels('The Problem (Why)'), wrapLabels('The Solution (What)'), wrapLabels('The Value (So What)')],
-                    datasets: [{
-                        label: 'Pitch Structure',
-                        data: [1, 1, 1],
-                        backgroundColor: [
-                            '#5E60CE',
-                            '#48BFE3',
-                            '#64DFDF'
-                        ],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        ...tooltipTitleCallback.plugins,
-                        legend: {
-                            position: 'bottom'
                         }
                     }
                 }
