@@ -6,10 +6,10 @@
     <title>iSense Project: Design Thinking Timeline</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
         .chart-container {
             position: relative;
@@ -17,14 +17,14 @@
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
-            /* Explicit height for the Gantt chart */
-            height: 400px; 
-            max-height: 450px;
+            /* Explicit height for the Gantt chart, increased slightly for 5 clear rows */
+            height: 450px; 
+            max-height: 500px;
         }
         /* Mobile adjustment for charts */
         @media (max-width: 768px) {
             .chart-container {
-                height: 350px;
+                height: 380px;
             }
         }
     </style>
@@ -39,29 +39,14 @@
         </header>
 
         <section class="mb-12">
-            <p class="text-lg text-center max-w-3xl mx-auto mb-10">
+            <p class="text-lg text-center max-w-4xl mx-auto mb-10">
                 This project visualizes the six-week process for undergraduate teams tackling the "iSense challenge." The workflow strictly follows the five phases of Design Thinking, progressing from deep user understanding to tangible prototyping and a final presentation.
             </p>
             
-            <div class="grid grid-cols-3 gap-4 text-center mb-12">
-                <div class="bg-white rounded-lg shadow-xl p-6 border-t-4 border-t-[#8C1D40]">
-                    <div class="text-5xl font-bold" style="color: #8C1D40;">6</div>
-                    <div class="text-lg text-gray-600">Total Weeks</div>
-                </div>
-                <div class="bg-white rounded-lg shadow-xl p-6 border-t-4 border-t-[#A38F6A]">
-                    <div class="text-5xl font-bold" style="color: #8C1D40;">5</div>
-                    <div class="text-lg text-gray-600">Design Phases</div>
-                </div>
-                <div class="bg-white rounded-lg shadow-xl p-6 border-t-4 border-t-[#8C1D40]">
-                    <div class="text-5xl font-bold" style="color: #8C1D40;">1</div>
-                    <div class="text-lg text-gray-600">Final Solution</div>
-                </div>
-            </div>
-
             <div class="w-full bg-white rounded-lg shadow-2xl p-6">
-                <h2 class="text-3xl font-semibold text-center mb-6" style="color: #8C1D40;">Phases & Duration (Gantt Overview)</h2>
-                <p class="text-center text-gray-700 mb-4">The core project timeline is organized by Design Thinking phases, showing how time investment shifts from foundational research to refinement and final delivery.</p>
-                <!-- Gantt Chart Container (Full Width) -->
+                <h2 class="text-3xl font-semibold text-center mb-6" style="color: #8C1D40;">Project Phases & Duration (Gantt Chart)</h2>
+                <p class="text-center text-gray-700 mb-4">The core project timeline is organized by Design Thinking phases, showing exact week numbers and the associated dates for each activity. The timeline progresses chronologically from bottom to top.</p>
+                
                 <div class="chart-container" style="max-width: 100%; margin: 0 auto;">
                     <canvas id="ganttChart"></canvas>
                 </div>
@@ -71,8 +56,8 @@
         <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
             <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6 border-t-4 border-t-[#8C1D40]">
-                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 1 & 2: Discover & Define (Weeks 1-2)</h2>
-                <p class="mb-6 text-gray-700">The first two weeks are crucial for **Empathy and Synthesis**. Teams immerse themselves in the problem space, mapping the human ecosystem and patient journey, and finalizing a clear Point of View (POV) statement and 20-30 "How Might We..." questions for the next phase.</p>
+                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 1 & 2: Discover & Define (Wks 1-2)</h2>
+                <p class="mb-6 text-gray-700">The first two weeks (Oct 30 - Nov 6) are crucial for **Empathy and Synthesis**. Teams immerse themselves in the problem space, mapping the human ecosystem and patient journey, and finalizing a clear Point of View (POV) statement and 20-30 "How Might We..." questions for the next phase.</p>
                 <h3 class="text-lg font-semibold mb-2" style="color: #A38F6A;">Key Activities</h3>
                 <ul class="list-disc list-inside text-gray-700 space-y-1">
                     <li>Mapping the Human Ecosystem workshop</li>
@@ -82,8 +67,8 @@
             </div>
 
             <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-t-[#A38F6A]">
-                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 3: Ideate (Week 3)</h2>
-                <p class="mb-6 text-gray-700">Week 3 focuses on **Divergent Ideation**. Teams use techniques like "Brainstorming by Sense" and **SCAMPER** to generate a high quantity of creative solutions. The week concludes with **Dot Voting** to converge on the final "Calming Kit Bundle" concept and storyboard its use.</p>
+                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 3: Ideate (Wk 3)</h2>
+                <p class="mb-6 text-gray-700">Week 3 (Nov 13) focuses on **Divergent Ideation**. Teams use techniques like "Brainstorming by Sense" and **SCAMPER** to generate a high quantity of creative solutions. The week concludes with **Dot Voting** to converge on the final "Calming Kit Bundle" concept and storyboard its use.</p>
                 <h3 class="text-lg font-semibold mb-2" style="color: #A38F6A;">Key Deliverables</h3>
                 <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4">
                     <li>Concept Convergence</li>
@@ -92,8 +77,8 @@
             </div>
             
             <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-t-[#8C1D40]">
-                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 4: Prototype & Test (Week 4)</h2>
-                <p class="mb-6 text-gray-700">In Week 4, ideas become tangible. Teams conduct a **Maker Session** for low-fidelity physical prototypes, and perform a **Service Prototype** (role-playing) to test the user experience. Structured feedback is gathered using the "I Like / I Wish / What If" matrix.</p>
+                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 4: Prototype & Test (Wk 4)</h2>
+                <p class="mb-6 text-gray-700">In Week 4 (Nov 20), ideas become tangible. Teams conduct a **Maker Session** for low-fidelity physical prototypes, and perform a **Service Prototype** (role-playing) to test the user experience. Structured feedback is gathered using the "I Like / I Wish / What If" matrix.</p>
                 <h3 class="text-lg font-semibold mb-2" style="color: #A38F6A;">Key Activities</h3>
                 <ul class="list-disc list-inside text-gray-700 space-y-1">
                     <li>Low-Fidelity Prototyping</li>
@@ -103,8 +88,8 @@
             </div>
 
             <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6 border-t-4 border-t-[#A38F6A]">
-                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 5: Iteration & Final Pitch (Weeks 5-6)</h2>
-                <p class="mb-6 text-gray-700">Week 5 is an implicit **Iteration and Refinement** period where teams apply feedback. Week 6 is dedicated to the final presentation, including a dress rehearsal, preparation of the 3-minute pitch deck, and culminating in the "Pitch-A-Thon" for the final delivery.</p>
+                <h2 class="text-3xl font-semibold mb-4" style="color: #8C1D40;">Phase 5: Iteration & Final Pitch (Wks 5-6)</h2>
+                <p class="mb-6 text-gray-700">Week 5 (Nov 21 - Dec 1) is an implicit **Iteration and Refinement** period where teams apply feedback. Week 6 (Dec 2 - Dec 4) is dedicated to the final presentation, including a dress rehearsal, preparation of the 3-minute pitch deck, and culminating in the "Pitch-A-Thon" for the final delivery.</p>
                 <h3 class="text-lg font-semibold mb-2" style="color: #A38F6A;">Final Deliverables (Week 6)</h3>
                 <ul class="list-disc list-inside text-gray-700 space-y-1">
                     <li>Finalized Physical Prototype</li>
@@ -144,12 +129,18 @@
             new Chart(ganttChartCtx, {
                 type: 'bar',
                 data: {
-                    // Phases are listed in reverse order (bottom to top of chart)
-                    labels: ['Finalize & Present (Wk 6)', 'Iteration (Wk 5)', 'Prototype & Test (Wk 4)', 'Ideate (Wk 3)', 'Discover & Define (Wks 1-2)'],
+                    // Phases are now listed in ascending order (Discover & Define is the first element)
+                    labels: [
+                        'Discover & Define (Oct 30 - Nov 6)', 
+                        'Ideate (Nov 13)', 
+                        'Prototype & Test (Nov 20)', 
+                        'Iteration (Nov 21 - Dec 1)', 
+                        'Finalize & Present (Dec 2 - Dec 4)'
+                    ],
                     datasets: [
                         {
                             label: 'Preceding Time',
-                            data: [5, 4, 3, 2, 0], // Weeks before the task starts
+                            data: [0, 2, 3, 4, 5], // Weeks before the task starts (0, 2, 3, 4, 5)
                             backgroundColor: 'rgba(243, 244, 246, 0.8)', 
                             borderColor: 'transparent',
                             borderWidth: 0,
@@ -158,13 +149,13 @@
                         },
                         {
                             label: 'Phase Duration (Weeks)',
-                            data: [1, 1, 1, 1, 2], // Task duration
+                            data: [2, 1, 1, 1, 1], // Task duration (2, 1, 1, 1, 1)
                             backgroundColor: [
-                                '#8C1D40', // Finalize & Present (Maroon)
-                                'rgba(163, 143, 106, 0.6)', // Iteration (Lighter Gold)
-                                '#8C1D40', // Prototype & Test (Maroon)
+                                '#8C1D40', // Discover & Define (Maroon)
                                 '#A38F6A', // Ideate (Gold)
-                                '#8C1D40'  // Discover & Define (Maroon)
+                                '#8C1D40', // Prototype & Test (Maroon)
+                                'rgba(163, 143, 106, 0.6)', // Iteration (Lighter Gold)
+                                '#8C1D40'  // Finalize & Present (Maroon)
                             ],
                             borderColor: [
                                 '#6B1731', 
@@ -194,7 +185,6 @@
                             },
                             stacked: true,
                             grid: {
-                                // Only show vertical lines at the week start points
                                 drawOnChartArea: true,
                                 color: 'rgba(0, 0, 0, 0.1)'
                             },
